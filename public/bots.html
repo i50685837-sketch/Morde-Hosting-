@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MordeHost · My Bots</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#080808;
+  --muted:#777;
+  --border:#e5e5e5;
+  --soft:#f0f1f3;
+  --green:#168345;
+  --red:#b42318;
+}
+
+html.dark{
+  --bg:#090909;
+  --card:#111;
+  --text:#fff;
+  --muted:#999;
+  --border:#292929;
+  --soft:#181818;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:265px;
+  background:#050505;
+  color:#fff;
+  padding:20px 14px;
+  overflow-y:auto;
+  z-index:100;
+  transition:.25s;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 10px 22px;
+  font-size:21px;
+  font-weight:950;
+}
+
+.logo-box{
+  width:39px;
+  height:39px;
+  border-radius:11px;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
+
+.sidebar-user{
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:14px 12px;
+  margin-bottom:17px;
+}
+
+.sidebar-avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  margin-bottom:9px;
+}
+
+.sidebar-name{
+  font-size:14px;
+  font-weight:900;
+}
+
+.sidebar-email{
+  color:#858585;
+  font-size:12px;
+  margin-top:4px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-title{
+  color:#666;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:13px 12px 6px;
+}
+
+.nav a,
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#a7a7a7;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  text-align:left;
+}
+
+.nav a:hover,
+.nav a.active,
+.nav button:hover{
+  background:#fff;
+  color:#000;
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  font-weight:900;
+}
+
+/* MAIN */
+
+.main{
+  margin-left:265px;
+  min-height:100vh;
+}
+
+.topbar{
+  height:72px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.menu-btn{
+  display:none;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  font-size:25px;
+  cursor:pointer;
+}
+
+.page-title{
+  font-size:14px;
+  font-weight:900;
+}
+
+.wallet-mini{
+  background:#000;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:900;
+}
+
+/* CONTENT */
+
+.content{
+  max-width:1150px;
+  margin:auto;
+  padding:30px;
+}
+
+.heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:15px;
+  margin-bottom:22px;
+}
+
+.heading h1{
+  font-size:30px;
+  font-weight:950;
+}
+
+.heading p{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:7px;
+}
+
+.primary-btn{
+  border:0;
+  background:#000;
+  color:#fff;
+  padding:12px 17px;
+  border-radius:10px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+/* STATS */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+}
+
+.stat-value{
+  margin-top:7px;
+  font-size:25px;
+  font-weight:950;
+}
+
+/* BOTS */
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:20px;
+}
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.card-title{
+  font-size:15px;
+  font-weight:950;
+}
+
+.refresh-btn{
+  border:1px solid var(--border);
+  background:var(--soft);
+  color:var(--text);
+  border-radius:9px;
+  padding:9px 13px;
+  font-size:10px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.bots-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.bot-card{
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:18px;
+  background:var(--card);
+}
+
+.bot-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:15px;
+}
+
+.bot-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.bot-icon{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
+
+.bot-name{
+  font-size:14px;
+  font-weight:950;
+}
+
+.bot-id{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:5px;
+  font-family:monospace;
+  max-width:150px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border-radius:20px;
+  padding:6px 9px;
+  font-size:9px;
+  font-weight:950;
+}
+
+.status-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+}
+
+.status.online{
+  background:#e9f8ef;
+  color:#168345;
+}
+
+.status.online .status-dot{
+  background:#168345;
+}
+
+.status.offline{
+  background:#eee;
+  color:#666;
+}
+
+.status.offline .status-dot{
+  background:#777;
+}
+
+.status.deploying{
+  background:#fff4dc;
+  color:#946800;
+}
+
+.status.deploying .status-dot{
+  background:#946800;
+}
+
+.bot-details{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:18px 0;
+  padding:15px 0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+
+.detail-label{
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  font-weight:900;
+}
+
+.detail-value{
+  margin-top:4px;
+  font-size:11px;
+  font-weight:800;
+  word-break:break-word;
+}
+
+.bot-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.action-btn{
+  border:1px solid var(--border);
+  background:var(--soft);
+  color:var(--text);
+  padding:9px 12px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.action-btn:hover{
+  background:#000;
+  color:#fff;
+}
+
+.action-btn.danger{
+  color:var(--red);
+}
+
+.action-btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+/* EMPTY */
+
+.empty{
+  padding:55px 20px;
+  text-align:center;
+}
+
+.empty-icon{
+  width:58px;
+  height:58px;
+  border-radius:15px;
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 16px;
+  font-size:22px;
+  font-weight:950;
+}
+
+.empty h3{
+  font-size:16px;
+  font-weight:950;
+}
+
+.empty p{
+  color:var(--muted);
+  font-size:12px;
+  margin:7px 0 18px;
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#000;
+  color:#fff;
+  padding:13px 16px;
+  border-radius:10px;
+  font-size:11px;
+  font-weight:800;
+  opacity:0;
+  transform:translateY(10px);
+  pointer-events:none;
+  transition:.25s;
+  z-index:300;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* MOBILE */
+
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:90;
+}
+
+@media(max-width:900px){
+
+  .sidebar{
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .overlay.show{
+    display:block;
+  }
+
+  .bots-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:650px){
+
+  .content{
+    padding:20px 14px;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .heading{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .heading h1{
+    font-size:25px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="logo">
+    <div class="logo-box">M</div>
+    MordeHost
+  </div>
+
+  <div class="sidebar-user">
+
+    <div
+      class="sidebar-avatar"
+      id="sidebarAvatar">
+      U
+    </div>
+
+    <div
+      class="sidebar-name"
+      id="sidebarName">
+      User
+    </div>
+
+    <div
+      class="sidebar-email"
+      id="sidebarEmail">
+      user@example.com
+    </div>
+
+  </div>
+
+  <nav class="nav">
+
+    <div class="nav-title">
+      Main
+    </div>
+
+    <a href="dashboard.html">
+      <span class="nav-icon">◆</span>
+      Dashboard
+    </a>
+
+    <a href="deploy.html">
+      <span class="nav-icon">+</span>
+      Deploy Bot
+    </a>
+
+    <a
+      href="bots.html"
+      class="active">
+      <span class="nav-icon">◈</span>
+      My Bots
+    </a>
+
+    <a href="logs.html">
+      <span class="nav-icon">≡</span>
+      Logs
+    </a>
+
+    <div class="nav-title">
+      Wallet
+    </div>
+
+    <a href="wallet.html">
+      <span class="nav-icon">$</span>
+      Wallet
+    </a>
+
+    <a href="transactions.html">
+      <span class="nav-icon">↕</span>
+      Transactions
+    </a>
+
+    <div class="nav-title">
+      Account
+    </div>
+
+    <a href="profile.html">
+      <span class="nav-icon">○</span>
+      Profile
+    </a>
+
+    <a href="settings.html">
+      <span class="nav-icon">⚙</span>
+      Settings
+    </a>
+
+    <button id="themeBtn">
+      <span class="nav-icon">◐</span>
+      Theme
+    </button>
+
+    <div class="nav-title">
+      Help
+    </div>
+
+    <a href="support.html">
+      <span class="nav-icon">?</span>
+      Support
+    </a>
+
+    <a href="about.html">
+      <span class="nav-icon">i</span>
+      About
+    </a>
+
+    <a href="terms.html">
+      <span class="nav-icon">§</span>
+      Terms
+    </a>
+
+    <button id="logoutBtn">
+      <span class="nav-icon">↪</span>
+      Log Out
+    </button>
+
+  </nav>
+</aside>
+
+<div
+  class="overlay"
+  id="overlay">
+</div>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<div class="main">
+
+<header class="topbar">
+
+  <div style="
+    display:flex;
+    align-items:center;
+    gap:14px;
+  ">
+
+    <button
+      class="menu-btn"
+      id="menuBtn">
+      ☰
+    </button>
+
+    <div class="page-title">
+      My Bots
+    </div>
+
+  </div>
+
+  <a
+    href="wallet.html"
+    class="wallet-mini">
+
+    Wallet ·
+    <span id="topWallet">
+      KES 0.00
+    </span>
+
+  </a>
+
+</header>
+
+
+<main class="content">
+
+  <div class="heading">
+
+    <div>
+
+      <h1>
+        My Bots
+      </h1>
+
+      <p>
+        Manage and monitor your hosted bots.
+      </p>
+
+    </div>
+
+    <a
+      href="deploy.html"
+      class="primary-btn">
+
+      + Deploy Bot
+
+    </a>
+
+  </div>
+
+
+  <!-- =====================================
+       STATS
+  ====================================== -->
+
+  <div class="stats">
+
+    <div class="stat">
+
+      <div class="stat-label">
+        TOTAL BOTS
+      </div>
+
+      <div
+        class="stat-value"
+        id="totalBots">
+        0
+      </div>
+
+    </div>
+
+    <div class="stat">
+
+      <div class="stat-label">
+        ONLINE
+      </div>
+
+      <div
+        class="stat-value"
+        id="onlineBots">
+        0
+      </div>
+
+    </div>
+
+    <div class="stat">
+
+      <div class="stat-label">
+        OFFLINE
+      </div>
+
+      <div
+        class="stat-value"
+        id="offlineBots">
+        0
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================
+       BOTS
+  ====================================== -->
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        Your Bots
+      </div>
+
+      <button
+        class="refresh-btn"
+        onclick="loadBots()">
+
+        Refresh
+
+      </button>
+
+    </div>
+
+    <div
+      class="bots-grid"
+      id="botsContainer">
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          ◆
+        </div>
+
+        <h3>
+          Loading bots...
+        </h3>
+
+        <p>
+          Please wait.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+</div>
+
+
+<div
+  class="toast"
+  id="toast">
+</div>
+
+
+<script>
+
+/* =========================================
+   AUTH
+========================================= */
+
+function getToken(){
+
+  return (
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+    sessionStorage.getItem(
+      "mordehost_token"
+    ) ||
+    localStorage.getItem(
+      "token"
+    )
+  );
+
+}
+
+
+function logout(){
+
+  localStorage.removeItem(
+    "mordehost_token"
+  );
+
+  sessionStorage.removeItem(
+    "mordehost_token"
+  );
+
+  localStorage.removeItem(
+    "token"
+  );
+
+  localStorage.removeItem(
+    "mordehost_user"
+  );
+
+  localStorage.removeItem(
+    "mordehostUser"
+  );
+
+  window.location.replace(
+    "login.html"
+  );
+
+}
+
+
+/* =========================================
+   API
+========================================= */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token =
+    getToken();
+
+  if(!token){
+
+    logout();
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+  const headers = {
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+  };
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+  const response =
+    await fetch(
+      "/api" + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+  let data={};
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data={};
+
+  }
+
+  if(response.status === 401){
+
+    logout();
+
+    throw new Error(
+      "Session expired."
+    );
+
+  }
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      "Request failed."
+    );
+
+  }
+
+  return data;
+
+}
+
+
+/* =========================================
+   ESCAPE
+========================================= */
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+function escapeAttr(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /\\/g,
+    "\\\\"
+  )
+  .replace(
+    /'/g,
+    "\\'"
+  );
+
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimer;
+
+function showToast(
+  message
+){
+
+  const toast =
+    document.getElementById(
+      "toast"
+    );
+
+  toast.textContent =
+    message;
+
+  toast.classList.add(
+    "show"
+  );
+
+  clearTimeout(
+    toastTimer
+  );
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      3000
+    );
+
+}
+
+
+/* =========================================
+   LOAD USER
+========================================= */
+
+async function loadUser(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+    const user =
+      data.user ||
+      data;
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+    document.getElementById(
+      "sidebarName"
+    ).textContent =
+      name;
+
+    document.getElementById(
+      "sidebarEmail"
+    ).textContent =
+      user.email ||
+      "Account";
+
+    document.getElementById(
+      "sidebarAvatar"
+    ).textContent =
+      name
+        .charAt(0)
+        .toUpperCase();
+
+    const balance =
+      Number(
+        user.walletBalance ||
+        user.balance ||
+        0
+      );
+
+    document.getElementById(
+      "topWallet"
+    ).textContent =
+      `KES ${balance.toLocaleString(
+        "en-KE",
+        {
+          minimumFractionDigits:2
+        }
+      )}`;
+
+  }catch(error){
+
+    console.log(
+      "User:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   LOAD BOTS
+========================================= */
+
+async function loadBots(){
+
+  const container =
+    document.getElementById(
+      "botsContainer"
+    );
+
+  container.innerHTML = `
+
+    <div class="empty">
+
+      <div class="empty-icon">
+        ◆
+      </div>
+
+      <h3>
+        Loading bots...
+      </h3>
+
+      <p>
+        Please wait.
+      </p>
+
+    </div>
+
+  `;
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/bots"
+      );
+
+    const bots =
+      Array.isArray(data)
+        ? data
+        : (
+            data.bots ||
+            []
+          );
+
+    renderBots(
+      bots
+    );
+
+  }catch(error){
+
+    console.error(
+      "Bots:",
+      error
+    );
+
+    container.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          !
+        </div>
+
+        <h3>
+          Could not load bots
+        </h3>
+
+        <p>
+          ${escapeHtml(
+            error.message
+          )}
+        </p>
+
+        <button
+          class="primary-btn"
+          onclick="loadBots()">
+
+          Try Again
+
+        </button>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================
+   RENDER BOTS
+========================================= */
+
+function renderBots(
+  bots
+){
+
+  const container =
+    document.getElementById(
+      "botsContainer"
+    );
+
+  const total =
+    bots.length;
+
+  const online =
+    bots.filter(
+      bot =>
+        bot.status === "online" ||
+        bot.status === "running"
+    ).length;
+
+  const offline =
+    total - online;
+
+  document.getElementById(
+    "totalBots"
+  ).textContent =
+    total;
+
+  document.getElementById(
+    "onlineBots"
+  ).textContent =
+    online;
+
+  document.getElementById(
+    "offlineBots"
+  ).textContent =
+    offline;
+
+
+  if(total === 0){
+
+    container.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          ◆
+        </div>
+
+        <h3>
+          No bots yet
+        </h3>
+
+        <p>
+          Deploy your first bot to start hosting.
+        </p>
+
+        <a
+          href="deploy.html"
+          class="primary-btn">
+
+          Deploy Your First Bot
+
+        </a>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    bots.map(
+      bot => {
+
+        const isOnline =
+          bot.status === "online" ||
+          bot.status === "running";
+
+        const isDeploying =
+          bot.status === "deploying" ||
+          bot.status === "building" ||
+          bot.status === "pending";
+
+        const statusClass =
+          isOnline
+            ? "online"
+            : isDeploying
+              ? "deploying"
+              : "offline";
+
+        const statusText =
+          isOnline
+            ? "ONLINE"
+            : isDeploying
+              ? "DEPLOYING"
+              : "OFFLINE";
+
+        const botId =
+          bot._id ||
+          bot.id ||
+          "";
+
+        const botName =
+          bot.name ||
+          bot.botName ||
+          "Unnamed Bot";
+
+        const runtime =
+          bot.runtime ||
+          bot.language ||
+          "Node.js";
+
+        const phone =
+          bot.phone ||
+          bot.phoneNumber ||
+          "Not set";
+
+        const session =
+          bot.sessionId
+            ? "Configured"
+            : "Not configured";
+
+        let created =
+          "—";
+
+        if(bot.createdAt){
+
+          const date =
+            new Date(
+              bot.createdAt
+            );
+
+          if(
+            !isNaN(
+              date.getTime()
+            )
+          ){
+
+            created =
+              date.toLocaleDateString(
+                "en-KE",
+                {
+                  day:"2-digit",
+                  month:"short",
+                  year:"numeric"
+                }
+              );
+
+          }
+
+        }
+
+        return `
+
+          <article
+            class="bot-card"
+            data-id="${escapeHtml(
+              botId
+            )}">
+
+            <div class="bot-top">
+
+              <div class="bot-info">
+
+                <div class="bot-icon">
+                  ◆
+                </div>
+
+                <div>
+
+                  <div class="bot-name">
+
+                    ${escapeHtml(
+                      botName
+                    )}
+
+                  </div>
+
+                  <div class="bot-id">
+
+                    ID:
+                    ${escapeHtml(
+                      botId || "—"
+                    )}
+
+                  </div>
+
+         
