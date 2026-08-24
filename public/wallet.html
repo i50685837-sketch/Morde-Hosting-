@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Deposit — MordeHost</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #090909;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .brand-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 14px;
+      border-radius: 16px;
+      background: #fff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    .brand h1 {
+      font-size: 25px;
+      margin-bottom: 6px;
+    }
+
+    .brand p {
+      color: #888;
+      font-size: 14px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ddd;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap span {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      height: 54px;
+      background: #080808;
+      border: 1px solid #303030;
+      border-radius: 12px;
+      color: #fff;
+      outline: none;
+      padding: 0 15px;
+      font-size: 16px;
+      transition: .2s;
+    }
+
+    input:focus {
+      border-color: #fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+    }
+
+    .amount-input {
+      padding-left: 48px;
+    }
+
+    .quick {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .quick button {
+      border: 1px solid #303030;
+      background: #171717;
+      color: #ddd;
+      padding: 10px 5px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .quick button:hover {
+      background: #242424;
+      border-color: #555;
+    }
+
+    .deposit-btn {
+      width: 100%;
+      height: 55px;
+      border: 0;
+      border-radius: 12px;
+      background: #fff;
+      color: #000;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: .2s;
+    }
+
+    .deposit-btn:hover {
+      transform: translateY(-1px);
+      background: #eaeaea;
+    }
+
+    .deposit-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 17px;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .message.error {
+      display: block;
+      background: #2a1111;
+      border: 1px solid #5b2222;
+      color: #ffb0b0;
+    }
+
+    .message.success {
+      display: block;
+      background: #102315;
+      border: 1px solid #244d2d;
+      color: #b9ffc4;
+    }
+
+    .note {
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #999;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="card">
+
+      <div class="brand">
+        <div class="brand-icon">M</div>
+
+        <h1>Make a Deposit</h1>
+
+        <p>Enter your payment details to continue</p>
+      </div>
+
+
+      <form id="depositForm">
+
+        <!-- EMAIL -->
+
+        <div class="field">
+
+          <label for="email">
+            Paystack Email
+          </label>
+
+          <input
+            type="email"
+            id="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+
+        <!-- AMOUNT -->
+
+        <div class="field">
+
+          <label for="amount">
+            Amount (KES)
+          </label>
+
+          <div class="input-wrap">
+
+            <span>KES</span>
+
+            <input
+              type="number"
+              id="amount"
+              class="amount-input"
+              placeholder="Enter amount"
+              min="1"
+              step="1"
+              required
+            >
+
+          </div>
+
+
+          <div class="quick">
+
+            <button
+              type="button"
+              onclick="setAmount(100)"
+            >
+              100
+            </button>
+
+            <button
+              type="button"
+              onclick="setAmount(500)"
+            >
+              500
+            </button>
+
+            <button
+              type="button"
+              onclick="setAmount(1000)"
+            >
+              1,000
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="deposit-btn"
+          id="depositBtn"
+        >
+          Continue to Paystack
+        </button>
+
+      </form>
+
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+
+      <div class="note">
+        You will be redirected to Paystack's secure
+        payment page to complete your deposit.
+      </div>
+
+      <a
+        href="dashboard.html"
+        class="back"
+      >
+        ← Back to Dashboard
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    const form =
+      document.getElementById("depositForm");
+
+    const emailInput =
+      document.getElementById("email");
+
+    const amountInput =
+      document.getElementById("amount");
+
+    const depositBtn =
+      document.getElementById("depositBtn");
+
+    const message =
+      document.getElementById("message");
+
+
+    function setAmount(amount) {
+
+      amountInput.value = amount;
+
+    }
+
+
+    function showMessage(text, type) {
+
+      message.textContent = text;
+
+      message.className =
+        "message " + type;
+
+    }
+
+
+    form.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+          emailInput.value.trim();
+
+        const amount =
+          Number(amountInput.value);
+
+
+        if (!email) {
+
+          showMessage(
+            "Please enter your email address.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (
+          !Number.isFinite(amount) ||
+          amount <= 0
+        ) {
+
+          showMessage(
+            "Please enter a valid deposit amount.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        depositBtn.disabled = true;
+
+        depositBtn.textContent =
+          "Connecting to Paystack...";
+
+
+        message.className =
+          "message";
+
+
+        try {
+
+          const response =
+            await fetch(
+              "/api/payments/deposit",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+
+                  email: email,
+
+                  amount: amount,
+
+                  metadata: {
+                    source: "MordeHost"
+                  }
+
+                })
+
+              }
+            );
+
+
+          const data =
+            await response.json();
+
+
+          if (
+            !response.ok ||
+            !data.status
+          ) {
+
+            throw new Error(
+              data.message ||
+              "Unable to initialize payment."
+            );
+
+          }
+
+
+          const authorizationUrl =
+            data.data &&
+            data.data.authorization_url;
+
+
+          if (!authorizationUrl) {
+
+            throw new Error(
+              "Paystack did not return a payment URL."
+            );
+
+          }
+
+
+          showMessage(
+            "Payment initialized. Redirecting to Paystack...",
+            "success"
+          );
+
+
+          window.location.href =
+            authorizationUrl;
+
+
+        } catch (error) {
+
+          console.error(
+            "Deposit error:",
+            error
+          );
+
+
+          showMessage(
+            error.message ||
+            "Something went wrong. Please try again.",
+            "error"
+          );
+
+
+          depositBtn.disabled = false;
+
+          depositBtn.textContent =
+            "Continue to Paystack";
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+  </html>
