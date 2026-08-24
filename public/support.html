@@ -1439,28 +1439,320 @@ async function sendMessage(
     */
 
     const data =
-      await apiRequest(
-        "/support/chat",
-        {
-          method:"POST",
+  await apiRequest(
+    "/support/chat",
+    {
+      method: "POST",
 
-          body:JSON.stringify({
-            message:text
-          })
+      body: JSON.stringify({
+        message: text
+      })
+    }
+  );
+
+
+removeTyping();
+
+
+const reply =
+  data.reply ||
+  data.message ||
+  "I couldn't generate a response right now. Please try again.";
+
+
+addMessage(
+  reply,
+  "bot"
+);
+
+
+} catch(error){
+
+  removeTyping();
+
+  console.error(
+    "AI support error:",
+    error
+  );
+
+
+  const reply =
+    getLocalSupportReply(
+      text
+    );
+
+
+  addMessage(
+    reply,
+    "bot"
+  );
+
+
+} finally {
+
+  sendBtn.disabled =
+    false;
+
+  input.focus();
+
+}
+
+
+}
+
+
+/* =========================================
+   LOCAL SUPPORT FALLBACK
+========================================= */
+
+function getLocalSupportReply(
+  message
+){
+
+  const text =
+    message.toLowerCase();
+
+
+  if(
+    text.includes("deploy")
+  ){
+
+    return "To deploy a bot, open Deploy Bot from the sidebar, enter your bot name, session ID, phone number and environment variables, then submit the deployment.";
+
+  }
+
+
+  if(
+    text.includes("offline") ||
+    text.includes("not running")
+  ){
+
+    return "If your bot is offline, open Logs and check the latest startup error. Also verify your session ID and environment variables.";
+
+  }
+
+
+  if(
+    text.includes("wallet") ||
+    text.includes("deposit") ||
+    text.includes("balance")
+  ){
+
+    return "You can manage your wallet from the Wallet section. Your current balance is displayed at the top of the dashboard.";
+
+  }
+
+
+  if(
+    text.includes("log")
+  ){
+
+    return "Open Logs from the sidebar, select your bot, and press Refresh. You can also enable Auto Refresh.";
+
+  }
+
+
+  if(
+    text.includes("password") ||
+    text.includes("account")
+  ){
+
+    return "Open Profile or Settings from the sidebar to manage your account.";
+
+  }
+
+
+  return "I can help with MordeHost deployments, bot status, logs, wallet questions and account settings. What are you having trouble with?";
+
+}
+
+
+/* =========================================
+   FORM SUBMIT
+========================================= */
+
+form.addEventListener(
+  "submit",
+  function(event){
+
+    event.preventDefault();
+
+    sendMessage(
+      input.value
+    );
+
+  }
+);
+
+
+/* =========================================
+   ENTER TO SEND
+========================================= */
+
+input.addEventListener(
+  "keydown",
+  function(event){
+
+    if(
+      event.key === "Enter" &&
+      !event.shiftKey
+    ){
+
+      event.preventDefault();
+
+      form.requestSubmit();
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   QUICK QUESTIONS
+========================================= */
+
+document
+  .querySelectorAll(
+    ".quick button"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        function(){
+
+          sendMessage(
+            this.dataset.question
+          );
+
         }
       );
 
-
-    removeTyping();
-
-
-    const reply =
-      data.reply ||
-      data.message ||
-      "I couldn't generate a response right now. Please try again.";
+    }
+  );
 
 
-    addMessage(
-      reply,
-      "bot"
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+const sidebar =
+  document.getElementById(
+    "sidebar"
+  );
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+document
+  .getElementById(
+    "menuBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      sidebar.classList.add(
+        "open"
+      );
+
+      overlay.classList.add(
+        "show"
+      );
+
+    }
+  );
+
+
+overlay.addEventListener(
+  "click",
+  function(){
+
+    sidebar.classList.remove(
+      "open"
+    );
+
+    overlay.classList.remove(
+      "show"
+    );
+
+  }
+);
+
+
+/* =========================================
+   THEME
+========================================= */
+
+document
+  .getElementById(
+    "themeBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      window.location.href =
+        "settings.html#theme";
+
+    }
+  );
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      if(
+        confirm(
+          "Are you sure you want to log out?"
+        )
+      ){
+
+        logout();
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+async function init(){
+
+  if(!getToken()){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+  await loadUser();
+
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
   
