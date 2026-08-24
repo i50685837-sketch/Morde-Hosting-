@@ -1669,4 +1669,1518 @@ function renderBots(
 
   document.getElementById(
     "onlineBots"
-  ).textContent 
+  ).textContent =
+    online;
+
+
+  document.getElementById(
+    "offlineBots"
+  ).textContent =
+    offline;
+
+
+  document.getElementById(
+    "botSummary"
+  ).textContent =
+    total
+      ? `${total} deployment${
+          total === 1 ? "" : "s"
+        }`
+      : "Manage your deployments";
+
+
+  /* =========================
+     EMPTY STATE
+  ========================= */
+
+  if(!total){
+
+    container.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          ◆
+        </div>
+
+        <h3>
+          No bots yet
+        </h3>
+
+        <p>
+          Deploy your first bot to start hosting.
+        </p>
+
+        <a
+          href="deploy.html"
+          class="primary-btn">
+
+          Deploy Your First Bot
+
+        </a>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  /* =========================
+     BOT CARDS
+  ========================= */
+
+  container.innerHTML =
+    bots.map(
+      bot => {
+
+        const id =
+          bot._id ||
+          bot.id ||
+          "";
+
+
+        const name =
+          bot.name ||
+          bot.botName ||
+          "Unnamed Bot";
+
+
+        const runtime =
+          bot.runtime ||
+          bot.language ||
+          "Node.js";
+
+
+        const status =
+          String(
+            bot.status ||
+            "offline"
+          ).toLowerCase();
+
+
+        const isOnline =
+          status === "online" ||
+          status === "running";
+
+
+        const isStarting =
+          status === "starting" ||
+          status === "deploying";
+
+
+        let statusText =
+          "OFFLINE";
+
+
+        let statusClass =
+          "offline";
+
+
+        if(isOnline){
+
+          statusText =
+            "ONLINE";
+
+          statusClass =
+            "online";
+
+        }
+
+
+        if(isStarting){
+
+          statusText =
+            "STARTING";
+
+          statusClass =
+            "starting";
+
+        }
+
+
+        const initial =
+          name
+            .charAt(0)
+            .toUpperCase();
+
+
+        return `
+
+          <article
+            class="bot-card"
+            data-bot-id="${escapeHtml(id)}">
+
+
+            <!-- BOT HEADER -->
+
+            <div class="bot-header">
+
+
+              <div class="bot-title">
+
+
+                <div class="bot-logo">
+                  ${escapeHtml(initial)}
+                </div>
+
+
+                <div>
+
+                  <div class="bot-name">
+
+                    ${escapeHtml(name)}
+
+                  </div>
+
+
+                  <div class="bot-runtime">
+
+                    ${escapeHtml(runtime)}
+
+                  </div>
+
+                </div>
+
+
+              </div>
+
+
+              <!-- STATUS -->
+
+              <div
+                class="status ${statusClass}">
+
+                <span
+                  class="status-dot">
+                </span>
+
+                ${statusText}
+
+              </div>
+
+
+            </div>
+
+
+            <!-- BOT INFORMATION -->
+
+            <div class="bot-info">
+
+
+              <!-- UPTIME -->
+
+              <div>
+
+                <div class="info-label">
+                  Uptime
+                </div>
+
+                <div class="info-value">
+
+                  ${escapeHtml(
+                    bot.uptime ||
+                    "—"
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <!-- MEMORY -->
+
+              <div>
+
+                <div class="info-label">
+                  Memory
+                </div>
+
+                <div class="info-value">
+
+                  ${escapeHtml(
+                    bot.memory ||
+                    bot.memoryUsage ||
+                    "—"
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <!-- CREATED -->
+
+              <div>
+
+                <div class="info-label">
+                  Created
+                </div>
+
+                <div class="info-value">
+
+                  ${formatDate(
+                    bot.createdAt
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <!-- BOT ID -->
+
+              <div>
+
+                <div class="info-label">
+                  Bot ID
+                </div>
+
+                <div
+                  class="info-value"
+                  title="${escapeHtml(id)}">
+
+                  ${escapeHtml(
+                    String(id)
+                      .slice(-8) ||
+                    "—"
+                  )}
+
+                </div>
+
+              </div>
+
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="bot-actions">
+
+
+              ${
+                isOnline
+
+                ? `
+
+                  <button
+                    class="bot-btn"
+                    onclick="botAction(
+                      '${escapeHtml(id)}',
+                      'stop'
+                    )">
+
+                    Stop
+
+                  </button>
+
+                `
+
+                : `
+
+                  <button
+                    class="bot-btn primary"
+                    onclick="botAction(
+                      '${escapeHtml(id)}',
+                      'start'
+                    )">
+
+                    Start
+
+                  </button>
+
+                `
+              }
+
+
+              <button
+                class="bot-btn"
+                onclick="botAction(
+                  '${escapeHtml(id)}',
+                  'restart'
+                )">
+
+                Restart
+
+              </button>
+
+
+              <button
+                class="bot-btn"
+                onclick="openLogs(
+                  '${escapeHtml(id)}'
+                )">
+
+                Logs
+
+              </button>
+
+
+            </div>
+
+
+          </article>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* ==================================================
+   BOT ACTION
+================================================== */
+
+async function botAction(
+  id,
+  action
+){
+
+  if(!id){
+
+    alert(
+      "Bot ID is missing."
+    );
+
+    return;
+
+  }
+
+
+  const actionNames = {
+
+    start:
+      "start",
+
+    stop:
+      "stop",
+
+    restart:
+      "restart"
+
+  };
+
+
+  if(!actionNames[action]){
+
+    alert(
+      "Invalid bot action."
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    await apiRequest(
+      `/bots/${encodeURIComponent(
+        id
+      )}/${action}`,
+      {
+        method:"POST"
+      }
+    );
+
+
+    await loadBots();
+
+
+  }catch(error){
+
+    console.error(
+      "Bot action error:",
+      error
+    );
+
+
+    alert(
+      error.message ||
+      `Unable to ${action} bot.`
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   OPEN BOT LOGS
+================================================== */
+
+function openLogs(
+  id
+){
+
+  if(!id){
+
+    alert(
+      "Bot ID is missing."
+    );
+
+    return;
+
+  }
+
+
+  window.location.href =
+    `logs.html?bot=${encodeURIComponent(
+      id
+    )}`;
+
+}
+
+
+/* ==================================================
+   LOAD WALLET
+================================================== */
+
+async function loadWallet(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/wallet"
+      );
+
+
+    const wallet =
+      data.wallet ||
+      data;
+
+
+    const balance =
+      Number(
+        wallet.balance ||
+        wallet.walletBalance ||
+        0
+      );
+
+
+    updateWallet(
+      balance
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "Wallet API unavailable:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   UPDATE WALLET
+================================================== */
+
+function updateWallet(
+  amount
+){
+
+  const balance =
+    Number(amount || 0);
+
+
+  const money =
+    `KES ${balance.toLocaleString(
+      "en-KE",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )}`;
+
+
+  const walletElement =
+    document.getElementById(
+      "walletBalance"
+    );
+
+
+  const topWallet =
+    document.getElementById(
+      "topWallet"
+    );
+
+
+  if(walletElement){
+
+    walletElement.textContent =
+      money;
+
+  }
+
+
+  if(topWallet){
+
+    topWallet.textContent =
+      money;
+
+  }
+
+}
+
+
+/* ==================================================
+   LOAD RECENT ACTIVITY
+================================================== */
+
+async function loadActivity(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/activity"
+      );
+
+
+    const activities =
+      Array.isArray(data)
+        ? data
+        : (
+          Array.isArray(
+            data.activities
+          )
+            ? data.activities
+            : []
+        );
+
+
+    renderActivity(
+      activities
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "Activity API unavailable:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   RENDER ACTIVITY
+================================================== */
+
+function renderActivity(
+  activities
+){
+
+  const container =
+    document.getElementById(
+      "activity"
+    );
+
+
+  if(!container){
+
+    return;
+
+  }
+
+
+  if(!activities.length){
+
+    container.innerHTML = `
+
+      <div class="activity-item">
+
+        <div class="activity-icon">
+          ◆
+        </div>
+
+        <div>
+
+          <div class="activity-title">
+            No recent activity
+          </div>
+
+          <div class="activity-date">
+            Your latest activity will appear here.
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    activities
+      .slice(0,10)
+      .map(
+        activity => {
+
+          const title =
+            activity.title ||
+            activity.message ||
+            "Account activity";
+
+
+          const icon =
+            activity.icon ||
+            "◆";
+
+
+          const date =
+            activity.createdAt ||
+            activity.date;
+
+
+          return `
+
+            <div
+              class="activity-item">
+
+              <div
+                class="activity-icon">
+
+                ${escapeHtml(icon)}
+
+              </div>
+
+
+              <div>
+
+                <div
+                  class="activity-title">
+
+                  ${escapeHtml(
+                    title
+                  )}
+
+                </div>
+
+
+                <div
+                  class="activity-date">
+
+                  ${formatDateTime(
+                    date
+                  )}
+
+                </div>
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+/* ==================================================
+   FORMAT DATE
+================================================== */
+
+function formatDate(
+  date
+){
+
+  if(!date){
+
+    return "—";
+
+  }
+
+
+  const parsed =
+    new Date(date);
+
+
+  if(
+    Number.isNaN(
+      parsed.getTime()
+    )
+  ){
+
+    return "—";
+
+  }
+
+
+  return parsed.toLocaleDateString(
+    "en-KE",
+    {
+      day:"2-digit",
+      month:"short",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+/* ==================================================
+   FORMAT DATE + TIME
+================================================== */
+
+function formatDateTime(
+  date
+){
+
+  if(!date){
+
+    return "—";
+
+  }
+
+
+  const parsed =
+    new Date(date);
+
+
+  if(
+    Number.isNaN(
+      parsed.getTime()
+    )
+  ){
+
+    return "—";
+
+  }
+
+
+  return parsed.toLocaleString(
+    "en-KE",
+    {
+      day:"2-digit",
+      month:"short",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+
+}
+
+
+/* ==================================================
+   ESCAPE HTML
+================================================== */
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+
+  .replace(
+    /</g,
+    "&lt;"
+  )
+
+  .replace(
+    />/g,
+    "&gt;"
+  )
+
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* ==================================================
+   LOGOUT
+================================================== */
+
+function logout(){
+
+  localStorage.removeItem(
+    "mordehost_token"
+  );
+
+
+  sessionStorage.removeItem(
+    "mordehost_token"
+  );
+
+
+  localStorage.removeItem(
+    "mordehost_user"
+  );
+
+
+  localStorage.removeItem(
+    "mordehostUser"
+  );
+
+
+  window.location.replace(
+    "login.html"
+  );
+
+}
+
+
+const logoutBtn =
+  document.getElementById(
+    "logoutBtn"
+  );
+
+
+if(logoutBtn){
+
+  logoutBtn.addEventListener(
+    "click",
+    () => {
+
+      const confirmed =
+        confirm(
+          "Are you sure you want to log out?"
+        );
+
+
+      if(confirmed){
+
+        logout();
+
+      }
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   MOBILE SIDEBAR
+================================================== */
+
+const sidebar =
+  document.getElementById(
+    "sidebar"
+  );
+
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+const menuBtn =
+  document.getElementById(
+    "menuBtn"
+  );
+
+
+function openMenu(){
+
+  if(!sidebar){
+
+    return;
+
+  }
+
+
+  sidebar.classList.add(
+    "open"
+  );
+
+
+  if(overlay){
+
+    overlay.classList.add(
+      "show"
+    );
+
+  }
+
+}
+
+
+function closeMenu(){
+
+  if(!sidebar){
+
+    return;
+
+  }
+
+
+  sidebar.classList.remove(
+    "open"
+  );
+
+
+  if(overlay){
+
+    overlay.classList.remove(
+      "show"
+    );
+
+  }
+
+}
+
+
+if(menuBtn){
+
+  menuBtn.addEventListener(
+    "click",
+    openMenu
+  );
+
+}
+
+
+if(overlay){
+
+  overlay.addEventListener(
+    "click",
+    closeMenu
+  );
+
+}
+
+
+/* Close menu after
+   clicking a mobile link */
+
+document
+  .querySelectorAll(
+    ".sidebar a"
+  )
+  .forEach(
+    link => {
+
+      link.addEventListener(
+        "click",
+        () => {
+
+          if(
+            window.innerWidth <= 950
+          ){
+
+            closeMenu();
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+/* ==================================================
+   THEME BUTTON
+================================================== */
+
+const themeBtn =
+  document.getElementById(
+    "themeBtn"
+  );
+
+
+if(themeBtn){
+
+  themeBtn.addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "settings.html#theme";
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   LOAD STORED USER
+================================================== */
+
+function loadStoredUser(){
+
+  try{
+
+    const storedRaw =
+      localStorage.getItem(
+        "mordehost_user"
+      ) ||
+
+      localStorage.getItem(
+        "mordehostUser"
+      );
+
+
+    if(!storedRaw){
+
+      return;
+
+    }
+
+
+    const stored =
+      typeof storedRaw === "string"
+        ? JSON.parse(
+            storedRaw
+          )
+        : storedRaw;
+
+
+    const name =
+      stored.name ||
+      stored.username ||
+      "User";
+
+
+    const email =
+      stored.email ||
+      stored.em ||
+      "Account";
+
+
+    const sidebarName =
+      document.getElementById(
+        "sidebarName"
+      );
+
+
+    const sidebarEmail =
+      document.getElementById(
+        "sidebarEmail"
+      );
+
+
+    const sidebarAvatar =
+      document.getElementById(
+        "sidebarAvatar"
+      );
+
+
+    const welcomeText =
+      document.getElementById(
+        "welcomeText"
+      );
+
+
+    if(sidebarName){
+
+      sidebarName.textContent =
+        name;
+
+    }
+
+
+    if(sidebarEmail){
+
+      sidebarEmail.textContent =
+        email;
+
+    }
+
+
+    if(sidebarAvatar){
+
+      sidebarAvatar.textContent =
+        name
+          .charAt(0)
+          .toUpperCase();
+
+    }
+
+
+    if(welcomeText){
+
+      welcomeText.textContent =
+        `Welcome back, ${name}.`;
+
+    }
+
+
+  }catch(error){
+
+    console.log(
+      "Stored user data error:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   CHECK AUTH
+================================================== */
+
+function getToken(){
+
+  return (
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    sessionStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    localStorage.getItem(
+      "token"
+    )
+  );
+
+}
+
+
+/* ==================================================
+   API REQUEST
+================================================== */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    window.location.replace(
+      "login.html"
+    );
+
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+
+  const headers = {
+
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+
+  };
+
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+
+  const response =
+    await fetch(
+      API_BASE + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data = {};
+
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data = {};
+
+  }
+
+
+  if(
+    response.status === 401
+  ){
+
+    localStorage.removeItem(
+      "mordehost_token"
+    );
+
+
+    sessionStorage.removeItem(
+      "mordehost_token"
+    );
+
+
+    localStorage.removeItem(
+      "token"
+    );
+
+
+    window.location.replace(
+      "login.html"
+    );
+
+
+    throw new Error(
+      "Your session has expired."
+    );
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* ==================================================
+   LOAD USER FROM API
+================================================== */
+
+async function loadUser(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+
+    const user =
+      data.user ||
+      data;
+
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+
+    const email =
+      user.email ||
+      user.em ||
+      "Account";
+
+
+    const sidebarName =
+      document.getElementById(
+        "sidebarName"
+      );
+
+
+    const sidebarEmail =
+      document.getElementById(
+        "sidebarEmail"
+      );
+
+
+    const sidebarAvatar =
+      document.getElementById(
+        "sidebarAvatar"
+      );
+
+
+    const welcomeText =
+      document.getElementById(
+        "welcomeText"
+      );
+
+
+    if(sidebarName){
+
+      sidebarName.textContent =
+        name;
+
+    }
+
+
+    if(sidebarEmail){
+
+      sidebarEmail.textContent =
+        email;
+
+    }
+
+
+    if(sidebarAvatar){
+
+      sidebarAvatar.textContent =
+        name
+          .charAt(0)
+          .toUpperCase();
+
+    }
+
+
+    if(welcomeText){
+
+      welcomeText.textContent =
+        `Welcome back, ${name}.`;
+
+    }
+
+
+    /* Save updated
+       user locally */
+
+    try{
+
+      localStorage.setItem(
+        "mordehost_user",
+        JSON.stringify(user)
+      );
+
+    }catch{
+
+      /* Ignore storage errors */
+
+    }
+
+
+    if(
+      user.walletBalance !==
+      undefined
+    ){
+
+      updateWallet(
+        Number(
+          user.walletBalance
+        )
+      );
+
+    }
+
+
+  }catch(error){
+
+    console.log(
+      "User API unavailable:",
+      error.message
+    );
+
+
+    /* Keep stored user
+       information if API
+       is temporarily unavailable */
+
+    loadStoredUser();
+
+  }
+
+}
+
+
+/* ==================================================
+   INITIALIZE DASHBOARD
+================================================== */
+
+async function initDashboard(){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+
+  /* Load cached user
+     immediately */
+
+  loadStoredUser();
+
+
+  /* Then refresh data */
+
+  await Promise.allSettled([
+
+    loadUser(),
+
+    loadBots(),
+
+    loadWallet(),
+
+    loadActivity()
+
+  ]);
+
+}
+
+
+/* ==================================================
+   START DASHBOARD
+================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    initDashboard();
+
+  }
+);
+
+</script>
+
+</body>
+</html>
+    
