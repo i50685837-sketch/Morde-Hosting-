@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>MordeHost · Terms & Conditions</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#080808;
+  --muted:#777;
+  --border:#e5e5e5;
+  --soft:#f0f1f3;
+}
+
+html.dark{
+  --bg:#090909;
+  --card:#111;
+  --text:#fff;
+  --muted:#999;
+  --border:#292929;
+  --soft:#181818;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:265px;
+  background:#050505;
+  color:#fff;
+  padding:20px 14px;
+  overflow-y:auto;
+  z-index:100;
+  transition:.25s;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 10px 22px;
+  font-size:21px;
+  font-weight:950;
+}
+
+.logo-box{
+  width:39px;
+  height:39px;
+  border-radius:11px;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
+
+.sidebar-user{
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:14px 12px;
+  margin-bottom:17px;
+}
+
+.sidebar-avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  margin-bottom:9px;
+}
+
+.sidebar-name{
+  font-size:14px;
+  font-weight:900;
+}
+
+.sidebar-email{
+  color:#858585;
+  font-size:12px;
+  margin-top:4px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-title{
+  color:#666;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:13px 12px 6px;
+}
+
+.nav a,
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#a7a7a7;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  text-align:left;
+}
+
+.nav a:hover,
+.nav a.active,
+.nav button:hover{
+  background:#fff;
+  color:#000;
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  font-weight:900;
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main{
+  margin-left:265px;
+  min-height:100vh;
+}
+
+.topbar{
+  height:72px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.menu-btn{
+  display:none;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  font-size:25px;
+  cursor:pointer;
+}
+
+.page-title{
+  font-size:14px;
+  font-weight:900;
+}
+
+.wallet-mini{
+  background:#000;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:900;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.content{
+  max-width:1050px;
+  margin:auto;
+  padding:30px;
+}
+
+.heading{
+  margin-bottom:22px;
+}
+
+.heading h1{
+  font-size:30px;
+  font-weight:950;
+}
+
+.heading p{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:7px;
+}
+
+
+/* =========================================
+   TERMS CARD
+========================================= */
+
+.terms-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:30px;
+}
+
+.updated{
+  display:inline-block;
+  padding:7px 10px;
+  border-radius:20px;
+  background:var(--soft);
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:24px;
+}
+
+.terms-section{
+  padding-bottom:25px;
+  margin-bottom:25px;
+  border-bottom:1px solid var(--border);
+}
+
+.terms-section:last-child{
+  border-bottom:0;
+  margin-bottom:0;
+}
+
+.terms-section h2{
+  font-size:17px;
+  font-weight:950;
+  margin-bottom:10px;
+}
+
+.terms-section p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.85;
+  margin-bottom:10px;
+}
+
+.terms-section ul{
+  padding-left:20px;
+  color:var(--muted);
+}
+
+.terms-section li{
+  font-size:13px;
+  line-height:1.8;
+  margin-bottom:5px;
+}
+
+
+/* =========================================
+   NOTICE
+========================================= */
+
+.notice{
+  background:var(--soft);
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:17px;
+  margin-bottom:25px;
+}
+
+.notice strong{
+  display:block;
+  font-size:12px;
+  margin-bottom:5px;
+}
+
+.notice span{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer{
+  text-align:center;
+  padding:30px 10px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:90;
+}
+
+@media(max-width:900px){
+
+  .sidebar{
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .overlay.show{
+    display:block;
+  }
+
+}
+
+@media(max-width:600px){
+
+  .content{
+    padding:20px 14px;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .page-title{
+    display:none;
+  }
+
+  .terms-card{
+    padding:20px;
+  }
+
+  .heading h1{
+    font-size:25px;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="logo">
+
+    <div class="logo-box">
+      M
+    </div>
+
+    MordeHost
+
+  </div>
+
+
+  <div class="sidebar-user">
+
+    <div
+      class="sidebar-avatar"
+      id="sidebarAvatar">
+      U
+    </div>
+
+    <div
+      class="sidebar-name"
+      id="sidebarName">
+      User
+    </div>
+
+    <div
+      class="sidebar-email"
+      id="sidebarEmail">
+      user@example.com
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <div class="nav-title">
+      Main
+    </div>
+
+    <a href="dashboard.html">
+      <span class="nav-icon">◆</span>
+      Dashboard
+    </a>
+
+    <a href="deploy.html">
+      <span class="nav-icon">+</span>
+      Deploy Bot
+    </a>
+
+    <a href="bots.html">
+      <span class="nav-icon">◈</span>
+      My Bots
+    </a>
+
+    <a href="logs.html">
+      <span class="nav-icon">≡</span>
+      Logs
+    </a>
+
+
+    <div class="nav-title">
+      Wallet
+    </div>
+
+    <a href="wallet.html">
+      <span class="nav-icon">$</span>
+      Wallet
+    </a>
+
+    <a href="transactions.html">
+      <span class="nav-icon">↕</span>
+      Transactions
+    </a>
+
+
+    <div class="nav-title">
+      Account
+    </div>
+
+    <a href="profile.html">
+      <span class="nav-icon">○</span>
+      Profile
+    </a>
+
+    <a href="settings.html">
+      <span class="nav-icon">⚙</span>
+      Settings
+    </a>
+
+    <button id="themeBtn">
+      <span class="nav-icon">◐</span>
+      Theme
+    </button>
+
+
+    <div class="nav-title">
+      Help
+    </div>
+
+    <a href="support.html">
+      <span class="nav-icon">?</span>
+      Support
+    </a>
+
+    <a href="about.html">
+      <span class="nav-icon">i</span>
+      About
+    </a>
+
+    <a
+      href="terms.html"
+      class="active">
+
+      <span class="nav-icon">§</span>
+      Terms
+
+    </a>
+
+    <button id="logoutBtn">
+      <span class="nav-icon">↪</span>
+      Log Out
+    </button>
+
+  </nav>
+
+</aside>
+
+
+<div
+  class="overlay"
+  id="overlay">
+</div>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<div class="main">
+
+
+<header class="topbar">
+
+  <div style="
+    display:flex;
+    align-items:center;
+    gap:14px;
+  ">
+
+    <button
+      class="menu-btn"
+      id="menuBtn">
+
+      ☰
+
+    </button>
+
+    <div class="page-title">
+      Terms & Conditions
+    </div>
+
+  </div>
+
+
+  <a
+    href="wallet.html"
+    class="wallet-mini">
+
+    Wallet ·
+
+    <span id="topWallet">
+      KES 0.00
+    </span>
+
+  </a>
+
+</header>
+
+
+<main class="content">
+
+
+  <div class="heading">
+
+    <h1>
+      Terms & Conditions
+    </h1>
+
+    <p>
+      Please read these terms before using MordeHost.
+    </p>
+
+  </div>
+
+
+  <section class="terms-card">
+
+
+    <span class="updated">
+      LAST UPDATED · AUGUST 2026
+    </span>
+
+
+    <div class="notice">
+
+      <strong>
+        Important
+      </strong>
+
+      <span>
+        By creating an account or using MordeHost,
+        you acknowledge that you have read and understood
+        these terms. If you do not agree with them,
+        please do not use the platform.
+      </span>
+
+    </div>
+
+
+    <!-- 1 -->
+
+    <section class="terms-section">
+
+      <h2>
+        1. About MordeHost
+      </h2>
+
+      <p>
+        MordeHost is a software hosting platform that
+        provides tools for deploying, managing and
+        monitoring applications and bots.
+      </p>
+
+      <p>
+        The platform may provide deployment tools,
+        application logs, account management,
+        wallet functionality and support services.
+      </p>
+
+    </section>
+
+
+    <!-- 2 -->
+
+    <section class="terms-section">
+
+      <h2>
+        2. Account Registration
+      </h2>
+
+      <p>
+        You are responsible for providing accurate
+        information when creating an account.
+      </p>
+
+      <ul>
+
+        <li>
+          Keep your login credentials secure.
+        </li>
+
+        <li>
+          Do not share your password or authentication
+          tokens with other people.
+        </li>
+
+        <li>
+          You are responsible for activity performed
+          through your account.
+        </li>
+
+        <li>
+          Notify MordeHost if you believe your account
+          has been compromised.
+        </li>
+
+      </ul>
+
+    </section>
+
+
+    <!-- 3 -->
+
+    <section class="terms-section">
+
+      <h2>
+        3. Bot Hosting
+      </h2>
+
+      <p>
+        Users are responsible for the applications,
+        bots, source code, session credentials and
+        environment variables they deploy.
+      </p>
+
+      <p>
+        You must only deploy software that you have
+        permission to operate and that complies with
+        applicable laws and the rules of the services
+        your bot connects to.
+      </p>
+
+    </section>
+
+
+    <!-- 4 -->
+
+    <section class="terms-section">
+
+      <h2>
+        4. Prohibited Use
+      </h2>
+
+      <p>
+        MordeHost must not be used to operate services
+        or software that unlawfully harm, disrupt or
+        compromise other systems or users.
+      </p>
+
+      <p>
+        Accounts or deployments may be restricted when
+        necessary to protect the platform, its users,
+        infrastructure or third-party services.
+      </p>
+
+    </section>
+
+
+    <!-- 5 -->
+
+    <section class="terms-section">
+
+      <h2>
+        5. Wallet & Payments
+      </h2>
+
+      <p>
+        MordeHost may provide a wallet for hosting
+        services and related platform charges.
+      </p>
+
+      <p>
+        Payment transactions may be processed through
+        third-party payment providers. Payment-provider
+        terms may also apply to those transactions.
+      </p>
+
+      <p>
+        Users should verify the transaction amount and
+        destination before confirming a payment.
+      </p>
+
+    </section>
+
+
+    <!-- 6 -->
+
+    <section class="terms-section">
+
+      <h2>
+        6. Service Availability
+      </h2>
+
+      <p>
+        We aim to keep MordeHost available and reliable,
+        but continuous availability cannot be guaranteed.
+      </p>
+
+      <p>
+        Maintenance, infrastructure problems, network
+        failures, security events or third-party outages
+        may temporarily affect services.
+      </p>
+
+    </section>
+
+
+    <!-- 7 -->
+
+    <section class="terms-section">
+
+      <h2>
+        7. Deployments & Data
+      </h2>
+
+      <p>
+        Users are responsible for maintaining appropriate
+        backups of important source code, credentials and
+        configuration data.
+      </p>
+
+      <p>
+        Do not use the platform as the only storage location
+        for critical information.
+      </p>
+
+    </section>
+
+
+    <!-- 8 -->
+
+    <section class="terms-section">
+
+      <h2>
+        8. Account Suspension
+      </h2>
+
+      <p>
+        MordeHost may suspend or restrict an account or
+        deployment when there is a reasonable need to
+        protect the platform, investigate abuse or enforce
+        these terms.
+      </p>
+
+    </section>
+
+
+    <!-- 9 -->
+
+    <section class="terms-section">
+
+      <h2>
+        9. Third-Party Services
+      </h2>
+
+      <p>
+        MordeHost may integrate with third-party services
+        such as payment providers, authentication providers,
+        cloud infrastructure and external APIs.
+      </p>
+
+      <p>
+        Third-party services operate under their own terms
+        and privacy policies.
+      </p>
+
+    </section>
+
+
+    <!-- 10 -->
+
+    <section class="terms-section">
+
+      <h2>
+        10. Changes to These Terms
+      </h2>
+
+      <p>
+        These terms may be updated as MordeHost develops
+        new features or changes its services.
+      </p>
+
+      <p>
+        Continued use of the platform after an update
+        means that you accept the updated terms.
+      </p>
+
+    </section>
+
+
+    <!-- 11 -->
+
+    <section class="terms-section">
+
+      <h2>
+        11. Contact & Support
+      </h2>
+
+      <p>
+        If you have questions about these terms or need
+        assistance with the platform, use the Support
+        section or contact the MordeHost support team.
+      </p>
+
+    </section>
+
+
+    <!-- 12 -->
+
+    <section class="terms-section">
+
+      <h2>
+        12. Acceptance
+      </h2>
+
+      <p>
+        By using MordeHost, you confirm that you understand
+        and agree to these Terms & Conditions.
+      </p>
+
+    </section>
+
+
+  </section>
+
+
+  <div class="footer">
+
+    © 2026 MordeHost.
+    All rights reserved.
+
+  </div>
+
+
+</main>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   THEME
+========================================= */
+
+const savedTheme =
+  localStorage.getItem(
+    "mordehost_theme"
+  ) || "system";
+
+
+function applyTheme(){
+
+  const dark =
+    savedTheme === "dark" ||
+    (
+      savedTheme === "system" &&
+      window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches
+    );
+
+  document.documentElement
+    .classList
+    .toggle(
+      "dark",
+      dark
+    );
+
+}
+
+applyTheme();
+
+
+/* =========================================
+   AUTH
+========================================= */
+
+function getToken(){
+
+  return (
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+    sessionStorage.getItem(
+      "mordehost_token"
+    ) ||
+    localStorage.getItem(
+      "token"
+    )
+  );
+
+}
+
+
+function logout(){
+
+  localStorage.removeItem(
+    "mordehost_token"
+  );
+
+  sessionStorage.removeItem(
+    "mordehost_token"
+  );
+
+  localStorage.removeItem(
+    "token"
+  );
+
+  localStorage.removeItem(
+    "mordehost_user"
+  );
+
+  localStorage.removeItem(
+    "mordehostUser"
+  );
+
+  window.location.replace(
+    "login.html"
+  );
+
+}
+
+
+/* =========================================
+   API
+========================================= */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token =
+    getToken();
+
+  if(!token){
+
+    logout();
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+
+  const headers = {
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+  };
+
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+
+  const response =
+    await fetch(
+      "/api" + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data={};
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data={};
+
+  }
+
+
+  if(response.status === 401){
+
+    logout();
+
+    throw new Error(
+      "Session expired."
+    );
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* =========================================
+   LOAD USER
+========================================= */
+
+async function loadUser(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+
+    const user =
+      data.user ||
+      data;
+
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+
+    document.getElementById(
+      "sidebarName"
+    ).textContent =
+      name;
+
+
+    document.getElementById(
+      "sidebarEmail"
+    ).textContent =
+      user.email ||
+      "Account";
+
+
+    document.getElementById(
+      "sidebarAvatar"
+    ).textContent =
+      name
+        .charAt(0)
+        .toUpperCase();
+
+
+    const balance =
+      Number(
+        user.walletBalance ||
+        user.balance ||
+        0
+      );
+
+
+    document.getElementById(
+      "topWallet"
+    ).textContent =
+      `KES ${balance.toLocaleString(
+        "en-KE",
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      )}`;
+
+
+  }catch(error){
+
+    console.log(
+      "User:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+const sidebar =
+  document.getElementById(
+    "sidebar"
+  );
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+document
+  .getElementById(
+    "menuBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      sidebar.classList.add(
+        "open"
+      );
+
+      overlay.classList.add(
+        "show"
+      );
+
+    }
+  );
+
+
+overlay.addEventListener(
+  "click",
+  function(){
+
+    sidebar.classList.remove(
+      "open"
+    );
+
+    overlay.classList.remove(
+      "show"
+    );
+
+  }
+);
+
+
+/* =========================================
+   THEME BUTTON
+========================================= */
+
+document
+  .getElementById(
+    "themeBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      window.location.href =
+        "settings.html#theme";
+
+    }
+  );
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      if(
+        confirm(
+          "Are you sure you want to log out?"
+        )
+      ){
+
+        logout();
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+async function init(){
+
+  if(!getToken()){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+  await loadUser();
+
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
+
+</script>
+
+</body>
+  </html>
