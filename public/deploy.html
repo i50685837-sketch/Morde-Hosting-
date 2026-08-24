@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>MordeHost · Deploy Bot</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#080808;
+  --muted:#737373;
+  --border:#e5e5e5;
+  --black:#050505;
+  --green:#16a34a;
+  --red:#dc2626;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+
+  width:265px;
+
+  background:#050505;
+  color:#fff;
+
+  padding:20px 14px;
+
+  z-index:100;
+
+  overflow-y:auto;
+
+  transition:.25s ease;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:5px 10px 22px;
+
+  font-size:21px;
+  font-weight:950;
+}
+
+.logo-box{
+  width:39px;
+  height:39px;
+
+  border-radius:11px;
+
+  background:#fff;
+  color:#000;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:950;
+}
+
+.sidebar-user{
+  border:1px solid #292929;
+  border-radius:14px;
+
+  padding:14px 12px;
+
+  margin-bottom:17px;
+}
+
+.sidebar-avatar{
+  width:43px;
+  height:43px;
+
+  border-radius:50%;
+
+  background:#fff;
+  color:#000;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:950;
+
+  margin-bottom:9px;
+}
+
+.sidebar-name{
+  font-size:14px;
+  font-weight:900;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.sidebar-email{
+  color:#858585;
+  font-size:12px;
+
+  margin-top:4px;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-title{
+  color:#666;
+
+  font-size:10px;
+  font-weight:900;
+
+  letter-spacing:1px;
+
+  text-transform:uppercase;
+
+  padding:13px 12px 6px;
+}
+
+.nav a,
+.nav button{
+  width:100%;
+
+  display:flex;
+  align-items:center;
+
+  gap:12px;
+
+  padding:12px;
+
+  border:0;
+  border-radius:10px;
+
+  background:transparent;
+  color:#a7a7a7;
+
+  text-decoration:none;
+
+  font-size:14px;
+  font-weight:800;
+
+  cursor:pointer;
+
+  text-align:left;
+}
+
+.nav a:hover,
+.nav a.active,
+.nav button:hover{
+  background:#fff;
+  color:#000;
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  font-weight:900;
+}
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main{
+  margin-left:265px;
+  min-height:100vh;
+}
+
+/* =========================================
+   TOP BAR
+========================================= */
+
+.topbar{
+  height:72px;
+
+  background:#fff;
+
+  border-bottom:1px solid var(--border);
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 28px;
+
+  position:sticky;
+  top:0;
+
+  z-index:50;
+}
+
+.menu-btn{
+  display:none;
+
+  border:0;
+  background:transparent;
+
+  font-size:25px;
+
+  cursor:pointer;
+}
+
+.page-title{
+  font-size:14px;
+  font-weight:900;
+}
+
+.wallet-mini{
+  background:#000;
+  color:#fff;
+
+  padding:10px 14px;
+
+  border-radius:9px;
+
+  text-decoration:none;
+
+  font-size:12px;
+  font-weight:900;
+}
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.content{
+  max-width:1100px;
+
+  margin:auto;
+
+  padding:30px;
+}
+
+.page-heading{
+  margin-bottom:24px;
+}
+
+.page-heading h1{
+  font-size:30px;
+  font-weight:950;
+}
+
+.page-heading p{
+  color:var(--muted);
+
+  margin-top:7px;
+
+  font-size:14px;
+}
+
+/* =========================================
+   DEPLOY GRID
+========================================= */
+
+.deploy-grid{
+  display:grid;
+
+  grid-template-columns:
+    minmax(0,1.6fr)
+    minmax(280px,.8fr);
+
+  gap:20px;
+
+  align-items:start;
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.card{
+  background:#fff;
+
+  border:1px solid var(--border);
+
+  border-radius:18px;
+
+  padding:24px;
+}
+
+.card + .card{
+  margin-top:20px;
+}
+
+.card-title{
+  font-size:19px;
+  font-weight:950;
+}
+
+.card-description{
+  color:var(--muted);
+
+  font-size:12px;
+
+  line-height:1.6;
+
+  margin-top:6px;
+
+  margin-bottom:22px;
+}
+
+/* =========================================
+   FORM
+========================================= */
+
+.form-group{
+  margin-bottom:19px;
+}
+
+label{
+  display:block;
+
+  margin-bottom:8px;
+
+  font-size:12px;
+  font-weight:900;
+}
+
+input,
+select{
+  width:100%;
+
+  padding:13px 14px;
+
+  border:1px solid var(--border);
+
+  border-radius:10px;
+
+  background:#fff;
+
+  color:#000;
+
+  outline:none;
+
+  font:inherit;
+
+  font-size:13px;
+
+  transition:.15s;
+}
+
+input:focus,
+select:focus{
+  border-color:#000;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(0,0,0,.06);
+}
+
+.help{
+  color:var(--muted);
+
+  font-size:10px;
+
+  line-height:1.5;
+
+  margin-top:6px;
+}
+
+.required{
+  color:#000;
+}
+
+/* =========================================
+   TWO COLUMNS
+========================================= */
+
+.form-row{
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:14px;
+}
+
+/* =========================================
+   ENVIRONMENT VARIABLES
+========================================= */
+
+.env-header{
+  display:flex;
+
+  align-items:center;
+  justify-content:space-between;
+
+  gap:15px;
+
+  margin-bottom:10px;
+}
+
+.env-title{
+  font-size:13px;
+  font-weight:950;
+}
+
+.add-env{
+  border:1px solid var(--border);
+
+  background:#fff;
+
+  color:#000;
+
+  border-radius:8px;
+
+  padding:8px 11px;
+
+  font-size:11px;
+
+  font-weight:900;
+
+  cursor:pointer;
+}
+
+.add-env:hover{
+  background:#f2f2f2;
+}
+
+.env-list{
+  display:flex;
+
+  flex-direction:column;
+
+  gap:9px;
+}
+
+.env-row{
+  display:grid;
+
+  grid-template-columns:
+    1fr 1.2fr 40px;
+
+  gap:8px;
+}
+
+.env-row input{
+  min-width:0;
+}
+
+.remove-env{
+  border:1px solid var(--border);
+
+  background:#fff;
+
+  color:#777;
+
+  border-radius:9px;
+
+  cursor:pointer;
+
+  font-weight:900;
+}
+
+.remove-env:hover{
+  color:var(--red);
+
+  border-color:#fecaca;
+
+  background:#fef2f2;
+}
+
+.env-empty{
+  border:1px dashed #d5d5d5;
+
+  border-radius:11px;
+
+  padding:17px;
+
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+/* =========================================
+   DEPLOY BUTTON
+========================================= */
+
+.deploy-btn{
+  width:100%;
+
+  padding:15px;
+
+  border:0;
+
+  border-radius:10px;
+
+  background:#000;
+
+  color:#fff;
+
+  font-size:13px;
+
+  font-weight:950;
+
+  cursor:pointer;
+
+  margin-top:7px;
+}
+
+.deploy-btn:hover{
+  opacity:.9;
+}
+
+.deploy-btn:disabled{
+  opacity:.5;
+
+  cursor:not-allowed;
+}
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.message{
+  display:none;
+
+  padding:12px 14px;
+
+  border-radius:10px;
+
+  margin-bottom:18px;
+
+  font-size:12px;
+
+  font-weight:800;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.success{
+  background:#ecfdf3;
+
+  color:#166534;
+
+  border:1px solid #bbf7d0;
+}
+
+.message.error{
+  background:#fef2f2;
+
+  color:#991b1b;
+
+  border:1px solid #fecaca;
+}
+
+/* =========================================
+   DEPLOYMENT STATUS
+========================================= */
+
+.deploy-status{
+  display:none;
+
+  margin-top:20px;
+
+  border:1px solid var(--border);
+
+  border-radius:14px;
+
+  padding:17px;
+}
+
+.deploy-status.show{
+  display:block;
+}
+
+.status-head{
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  font-size:13px;
+
+  font-weight:950;
+
+  margin-bottom:13px;
+}
+
+.status-dot{
+  width:9px;
+  height:9px;
+
+  border-radius:50%;
+
+  background:#999;
+}
+
+.status-dot.loading{
+  background:#111;
+
+  animation:pulse 1s infinite;
+}
+
+.status-dot.success{
+  background:var(--green);
+}
+
+.status-dot.error{
+  background:var(--red);
+}
+
+.status-line{
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  padding:6px 0;
+}
+
+.status-line.done{
+  color:#111;
+}
+
+.status-check{
+  width:17px;
+  height:17px;
+
+  border-radius:50%;
+
+  background:#eee;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:9px;
+
+  font-weight:950;
+}
+
+.status-line.done .status-check{
+  background:#000;
+  color:#fff;
+}
+
+@keyframes pulse{
+
+  0%,100%{
+    opacity:1;
+  }
+
+  50%{
+    opacity:.35;
+  }
+
+}
+
+/* =========================================
+   INFO CARD
+========================================= */
+
+.info-list{
+  display:flex;
+
+  flex-direction:column;
+
+  gap:11px;
+}
+
+.info-item{
+  display:flex;
+
+  gap:11px;
+
+  padding:13px;
+
+  border-radius:11px;
+
+  background:#f7f7f7;
+}
+
+.info-icon{
+  width:35px;
+  height:35px;
+
+  flex:none;
+
+  border-radius:9px;
+
+  background:#000;
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:11px;
+  font-weight:950;
+}
+
+.info-title{
+  font-size:12px;
+  font-weight:900;
+}
+
+.info-text{
+  color:var(--muted);
+
+  font-size:10px;
+
+  line-height:1.5;
+
+  margin-top:3px;
+}
+
+/* =========================================
+   HOSTING CARD
+========================================= */
+
+.hosting{
+  margin-top:20px;
+}
+
+.hosting-row{
+  display:flex;
+
+  align-items:center;
+  justify-content:space-between;
+
+  padding:11px 0;
+
+  border-bottom:1px solid var(--border);
+
+  font-size:12px;
+}
+
+.hosting-row:last-child{
+  border-bottom:0;
+}
+
+.hosting-label{
+  color:var(--muted);
+}
+
+.hosting-value{
+  font-weight:900;
+}
+
+/* =========================================
+   OVERLAY
+========================================= */
+
+.overlay{
+  display:none;
+
+  position:fixed;
+
+  inset:0;
+
+  background:rgba(0,0,0,.45);
+
+  z-index:90;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:900px){
+
+  .sidebar{
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .overlay.show{
+    display:block;
+  }
+
+  .deploy-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:600px){
+
+  .content{
+    padding:20px 15px;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .page-title{
+    display:none;
+  }
+
+  .page-heading h1{
+    font-size:25px;
+  }
+
+  .card{
+    padding:18px;
+  }
+
+  .form-row{
+    grid-template-columns:1fr;
+  }
+
+  .env-row{
+    grid-template-columns:
+      1fr 1fr 38px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside
+  class="sidebar"
+  id="sidebar">
+
+  <div class="logo">
+
+    <div class="logo-box">
+      M
+    </div>
+
+    MordeHost
+
+  </div>
+
+
+  <div class="sidebar-user">
+
+    <div
+      class="sidebar-avatar"
+      id="sidebarAvatar">
+
+      U
+
+    </div>
+
+    <div
+      class="sidebar-name"
+      id="sidebarName">
+
+      User
+
+    </div>
+
+    <div
+      class="sidebar-email"
+      id="sidebarEmail">
+
+      user@example.com
+
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <div class="nav-title">
+      Main
+    </div>
+
+
+    <a href="dashboard.html">
+
+      <span class="nav-icon">
+        ◆
+      </span>
+
+      Dashboard
+
+    </a>
+
+
+    <a
+      href="deploy.html"
+      class="active">
+
+      <span class="nav-icon">
+        +
+      </span>
+
+      Deploy Bot
+
+    </a>
+
+
+    <a href="bots.html">
+
+      <span class="nav-icon">
+        ◈
+      </span>
+
+      My Bots
+
+    </a>
+
+
+    <a href="logs.html">
+
+      <span class="nav-icon">
+        ≡
+      </span>
+
+      Logs
+
+    </a>
+
+
+    <div class="nav-title">
+      Wallet
+    </div>
+
+
+    <a href="wallet.html">
+
+      <span class="nav-icon">
+        $
+      </span>
+
+      Wallet
+
+    </a>
+
+
+    <a href="transactions.html">
+
+      <span class="nav-icon">
+        ↕
+      </span>
+
+      Transactions
+
+    </a>
+
+
+    <div class="nav-title">
+      Account
+    </div>
+
+
+    <a href="profile.html">
+
+      <span class="nav-icon">
+        ○
+      </span>
+
+      Profile
+
+    </a>
+
+
+    <a href="settings.html">
+
+      <span class="nav-icon">
+        ⚙
+      </span>
+
+      Settings
+
+    </a>
+
+
+    <button id="themeBtn">
+
+      <span class="nav-icon">
+        ◐
+      </span>
+
+      Theme
+
+    </button>
+
+
+    <div class="nav-title">
+      Help
+    </div>
+
+
+    <a href="support.html">
+
+      <span class="nav-icon">
+        ?
+      </span>
+
+      Support
+
+    </a>
+
+
+    <a href="about.html">
+
+      <span class="nav-icon">
+        i
+      </span>
+
+      About
+
+    </a>
+
+
+    <button id="logoutBtn">
+
+      <span class="nav-icon">
+        ↪
+      </span>
+
+      Log Out
+
+    </button>
+
+  </nav>
+
+</aside>
+
+
+<div
+  class="overlay"
+  id="overlay">
+</div>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<div class="main">
+
+
+  <!-- TOP BAR -->
+
+  <header class="topbar">
+
+    <div
+      style="
+        display:flex;
+        align-items:center;
+        gap:14px;
+      ">
+
+      <button
+        class="menu-btn"
+        id="menuBtn">
+
+        ☰
+
+      </button>
+
+      <div class="page-title">
+        Deploy Bot
+      </div>
+
+    </div>
+
+
+    <a
+      href="wallet.html"
+      class="wallet-mini">
+
+      Wallet ·
+
+      <span id="topWallet">
+        KES 0.00
+      </span>
+
+    </a>
+
+  </header>
+
+
+  <!-- =======================================
+       CONTENT
+  ======================================== -->
+
+  <main class="content">
+
+
+    <div class="page-heading">
+
+      <h1>
+        Deploy New Bot
+      </h1>
+
+      <p>
+        Create a deployment and start hosting your bot.
+      </p>
+
+    </div>
+
+
+    <div class="deploy-grid">
+
+
+      <!-- =====================================
+           LEFT
+      ====================================== -->
+
+      <div>
+
+
+        <section class="card">
+
+          <div class="card-title">
+            Bot Configuration
+          </div>
+
+          <div class="card-description">
+            Configure the basic information required
+            to deploy your bot.
+          </div>
+
+
+          <div
+            id="message"
+            class="message">
+          </div>
+
+
+          <form id="deployForm">
+
+
+            <!-- BOT NAME -->
+
+            <div class="form-group">
+
+              <label for="botName">
+
+                Bot Name
+                <span class="required">*</span>
+
+              </label>
+
+              <input
+                id="botName"
+                name="name"
+                type="text"
+                maxlength="60"
+                placeholder="my-whatsapp-bot"
+                autocomplete="off"
+                required>
+
+              <div class="help">
+                A unique name for this deployment.
+              </div>
+
+            </div>
+
+
+            <!-- SESSION ID -->
+
+            <div class="form-group">
+
+              <label for="sessionId">
+
+                Session ID
+                <span class="required">*</span>
+
+              </label>
+
+              <input
+                id="sessionId"
+                name="sessionId"
+                type="text"
+                maxlength="200"
+                placeholder="Your bot session ID"
+                autocomplete="off"
+                required>
+
+              <div class="help">
+                The session identifier used by your bot.
+              </div>
+
+            </div>
+
+
+            <!-- PHONE NUMBER -->
+
+            <div class="form-group">
+
+              <label for="phoneNumber">
+
+                Phone Number
+                <span class="required">*</span>
+
+              </label>
+
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                maxlength="20"
+                placeholder="+2547XXXXXXXX"
+                autocomplete="tel"
+                required>
+
+              <div class="help">
+                Use the international format, for example +2547XXXXXXXX.
+              </div>
+
+            </div>
+
+
+            <!-- REPOSITORY -->
+
+            <div class="form-group">
+
+              <label for="repository">
+
+                GitHub Repository
+                <span class="required">*</span>
+
+              </label>
+
+              <input
+                id="repository"
+                name="repository"
+                type="url"
+                placeholder="https://github.com/username/my-bot"
+                autocomplete="off"
+                required>
+
+              <div class="help">
+                Public or authorized repository containing your bot.
+              </div>
+
+            </div>
+
+
+            <!-- BRANCH -->
+
+            <div class="form-row">
+
+              <div class="form-group">
+
+                <label for="branch">
+                  Branch
+                </label>
+
+                <input
+                  id="branch"
+                  name="branch"
+                  type="text"
+                  value="main"
+                  placeholder="main">
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="startCommand">
+                  Start Command
+                </label>
+
+                <input
+                  id="startCommand"
+                  name="startCommand"
+                  type="text"
+                  value="npm start"
+                  placeholder="npm start">
+
+              </div>
+
+            </div>
+
+
+            <!-- ENVIRONMENT VARIABLES -->
+
+            <div class="form-group">
+
+
+              <div class="env-header">
+
+                <div>
+
+                  <div class="env-title">
+                    Environment Variables
+                  </div>
+
+                  <div class="help">
+                    Variables required by your bot.
+                  </div>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="add-env"
+                  id="addEnvBtn">
+
+                  + Add Variable
+
+                </button>
+
+              </div>
+
+
+              <div
+                class="env-list"
+                id="envList">
+
+                <div class="env-empty">
+                  No environment variables added.
+                  Click "Add Variable" to add one.
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- DEPLOY -->
+
+            <button
+              type="submit"
+              class="deploy-btn"
+              id="deployBtn">
+
+              Deploy Bot
+
+            </button>
+
+
+          </form>
+
+
+          <!-- DEPLOY STATUS -->
+
+          <div
+            class="deploy-status"
+            id="deployStatus">
+
+
+            <div class="status-head">
+
+              <span
+                class="status-dot loading"
+                id="statusDot">
+              </span>
+
+              <span id="statusTitle">
+                Preparing deployment...
+              </span>
+
+            </div>
+
+
+            <div
+              class="status-line"
+              id="stepOne">
+
+              <span class="status-check">
+                1
+              </span>
+
+              Preparing deployment
+
+            </div>
+
+
+            <div
+              class="status-line"
+              id="stepTwo">
+
+              <span class="status-check">
+                2
+              </span>
+
+              Installing dependencies
+
+            </div>
+
+
+            <div
+              class="status-line"
+              id="stepThree">
+
+              <span class="status-check">
+                3
+              </span>
+
+              Starting bot
+
+            </div>
+
+
+            <div
+              class="status-line"
+              id="stepFour">
+
+              <span class="status-check">
+                4
+              </span>
+
+              Deployment complete
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- =====================================
+           RIGHT
+      ====================================== -->
+
+      <div>
+
+
+        <!-- GUIDE -->
+
+        <section class="card">
+
+          <div class="card-title">
+            Deployment Guide
+          </div>
+
+          <div class="card-description">
+            Before deploying, make sure your project is ready.
+          </div>
+
+
+          <div class="info-list">
+
+
+            <div class="info-item">
+
+              <div class="info-icon">
+                1
+              </div>
+
+          
