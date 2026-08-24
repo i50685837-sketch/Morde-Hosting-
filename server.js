@@ -11,6 +11,129 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
+require('dotenv').config();
+const express = require('express');
+const crypto = require('crypto');
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+
+// Paystack requires raw body for webhook verification before JSON parsing
+app.use(express.json({
+    verify: (req, res, buf) => {
+        req.rawBody = buf;
+    }
+}));
+
+/**
+ * 1. Initialize Deposit Route
+ * POST /api/payments/deposit
+ * Sends customer payload to Paystack and returns a payment authorization URL
+ */
+app.post('/api/payments/deposit', async (req, res) => {
+    try {
+        const { email, amount, metadata } = req.body;
+        
+        if (!email || !amount) {
+            return res.status(400).json({ status: false, message: "Email and amount are required" });
+        }
+
+        // Paystack expects amounts in lowest subunits: kobo (NGN), pesewas (GHS), or cents (USD/ZAR)
+        const amountInSubunits = Math.round(parseFloat(amount) * 100);
+
+        const response = await fetch('https://paystack.co', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                amount: amountInSubunits,
+                callback_url: `${process.env.FRONTEND_URL}/payment/verify`,
+                metadata
+            })
+        });
+
+        const data = await response.json();
+        
+        if (!data.status) {
+            return res.status(400).json({ status: false, message: data.message });
+        }
+
+        // Send payment details and authorization_url to client
+        return res.status(200).json(data);
+        
+    } catch (error) {
+        return res.status(500).json({ status: false, message: error.message });
+    }
+});
+
+/**
+ * 2. Verify Transaction Route
+ * GET /api/payments/status/:reference
+ * Uses URL route parameters instead of query strings to check payment state
+ */
+app.get('/api/payments/status/:reference', async (req, res) => {
+    try {
+        const { reference } = req.params;
+        if (!reference) {
+            return res.status(400).json({ status: false, message: "Reference parameter is required" });
+        }
+
+        const response = await fetch(`https://paystack.co{reference}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.status && data.data.status === 'success') {
+            // Optional: Handle synchronous business logic here (e.g., credit user balances immediately)
+            return res.status(200).json({ status: true, message: "Payment verified successfully", data: data.data });
+        }
+
+        return res.status(400).json({ status: false, message: "Transaction verification failed" });
+
+    } catch (error) {
+        return res.status(500).json({ status: false, message: error.message });
+    }
+});
+
+/**
+ * 3. Secure Webhook Handler Route
+ * Paystack server-to-server asynchronous notifications
+ */
+app.post('/api/payments/webhook', (req, res) => {
+    // Validate signature to prove origin is Paystack
+    const hash = crypto
+        .createHmac('sha512', PAYSTACK_SECRET_KEY)
+        .update(req.rawBody)
+        .digest('hex');
+
+    if (hash !== req.headers['x-paystack-signature']) {
+        return res.status(401).send('Invalid webhook signature');
+    }
+
+    // Return a 200 OK status immediately to prevent timeout retries
+    res.sendStatus(200);
+
+    // Process payment asynchronously
+    const event = req.body;
+    if (event.event === 'charge.success') {
+        const paymentData = event.data;
+        const reference = paymentData.reference;
+        const customerEmail = paymentData.customer.email;
+        const metadata = paymentData.metadata;
+
+        console.log(`Async validation: Deposit completed for ${customerEmail}. Reference: ${reference}`);
+        // TODO: Update your database status, credit user balance, or trigger notification emails here
+    }
+});
+
+app.listen(PORT, () => console.log(`Server executing securely on port ${PORT}`));
+      
 
 // ============================================================
 // APP
