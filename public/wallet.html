@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Deposit — MORDE-HOST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a10;
+    --panel: #0e151f;
+    --panel-raised: #131c28;
+    --line: #1d2836;
+    --lime: #c6ff3d;
+    --lime-dim: #8fd12a;
+    --text: #e9edf3;
+    --muted: #6b7a8c;
+    --danger: #ff5470;
+    --focus: #c6ff3d;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 48px;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(198,255,61,0.06), transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(198,255,61,0.04), transparent 40%);
+  }
+
+  .screen { width: 100%; max-width: 420px; }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .back {
+    color: var(--muted);
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .back:focus-visible { outline: 2px solid var(--focus); border-radius: 4px; }
+  .brand {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: var(--lime);
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 4px 0 2px;
+  }
+  .subhead {
+    color: var(--muted);
+    font-size: 13.5px;
+    margin: 0 0 22px;
+  }
+
+  /* Signature element: amount readout styled like the in-game crash multiplier */
+  .amount-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 20px 22px;
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .amount-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(198,255,61,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .amount-label {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .amount-readout {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+  }
+  .amount-currency {
+    font-size: 20px;
+    color: var(--lime-dim);
+    font-weight: 600;
+  }
+  .amount-input {
+    background: transparent;
+    border: none;
+    color: var(--lime);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 44px;
+    font-weight: 700;
+    width: 100%;
+    max-width: 220px;
+    text-align: center;
+    caret-color: var(--lime);
+    text-shadow: 0 0 18px rgba(198,255,61,0.35);
+  }
+  .amount-input:focus { outline: none; }
+  .amount-input::placeholder { color: #2c3a4a; }
+
+  .chips {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .chip {
+    background: var(--panel-raised);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .chip:hover { border-color: var(--lime-dim); }
+  .chip:focus-visible { outline: 2px solid var(--focus); }
+  .chip.active {
+    border-color: var(--lime);
+    color: var(--lime);
+    background: rgba(198,255,61,0.07);
+  }
+
+  .field-group { margin-bottom: 16px; }
+  label.field-label {
+    display: block;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+  .phone-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0 14px;
+    transition: border-color 0.15s;
+  }
+  .phone-wrap:focus-within { border-color: var(--lime); }
+  .phone-prefix {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    font-size: 15px;
+    padding-right: 8px;
+    border-right: 1px solid var(--line);
+    margin-right: 10px;
+  }
+  input.phone-input {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    padding: 14px 0;
+    width: 100%;
+  }
+  input.phone-input:focus { outline: none; }
+  input.phone-input::placeholder { color: #3a4a5c; }
+
+  .cta {
+    width: 100%;
+    background: var(--lime);
+    color: #06110a;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15.5px;
+    padding: 16px 0;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .cta:hover { transform: translateY(-1px); }
+  .cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .cta:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .error-text {
+    font-size: 12.5px;
+    color: var(--danger);
+    margin-top: 8px;
+    display: none;
+  }
+
+  /* Status overlay while waiting for STK push */
+  .status-panel {
+    display: none;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px 20px;
+    text-align: center;
+    margin-top: 16px;
+  }
+  .status-panel.show { display: block; }
+  .pulse-ring {
+    width: 56px; height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    border: 2px solid var(--lime);
+    position: relative;
+  }
+  .pulse-ring::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--lime);
+    animation: pulse 1.6s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    100% { transform: scale(1.9); opacity: 0; }
+  }
+  .status-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .status-sub { color: var(--muted); font-size: 13px; }
+  .status-panel.success .pulse-ring,
+  .status-panel.success .pulse-ring::before { border-color: var(--lime); animation: none; }
+  .status-panel.failed .pulse-ring,
+  .status-panel.failed .pulse-ring::before { border-color: var(--danger); animation: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-ring::before { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="topbar">
+    <a href="/wallet.html" class="back" aria-label="Back to wallet">&larr; Wallet</a>
+    <span class="brand">WINCRASH</span>
+  </div>
+
+  <h1>Deposit funds</h1>
+  <p class="subhead">Funds land in your wallet the moment M-Pesa confirms.</p>
+
+  <form id="deposit-form" novalidate>
+    <div class="amount-card">
+      <div class="amount-label">Amount</div>
+      <div class="amount-readout">
+        <span class="amount-currency">KES</span>
+        <input
+          type="text"
+          inputmode="numeric"
+          class="amount-input"
+          id="amount"
+          placeholder="0"
+          autocomplete="off"
+        >
+      </div>
+      <div class="chips" role="group" aria-label="Quick amounts">
+        <button type="button" class="chip" data-amount="100">100</button>
+        <button type="button" class="chip" data-amount="250">250</button>
+        <button type="button" class="chip" data-amount="500">500</button>
+        <button type="button" class="chip" data-amount="1000">1,000</button>
+        <button type="button" class="chip" data-amount="2500">2,500</button>
+        <button type="button" class="chip" data-amount="5000">5,000</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="phone">M-Pesa number</label>
+      <div class="phone-wrap">
+        <span class="phone-prefix">+254</span>
+        <input
+          type="tel"
+          id="phone"
+          class="phone-input"
+          placeholder="712 345 678"
+          inputmode="numeric"
+          autocomplete="tel"
+        >
+      </div>
+      <div class="error-text" id="error-text"></div>
+    </div>
+
+    <button type="submit" class="cta" id="submit-btn">Deposit via M-Pesa</button>
+    <p class="hint">You'll get a prompt on your phone to enter your M-Pesa PIN.<br>Minimum deposit KES 50.</p>
+  </form>
+
+  <div class="status-panel" id="status-panel">
+    <div class="pulse-ring"></div>
+    <div class="status-title" id="status-title">Check your phone</div>
+    <div class="status-sub" id="status-sub">Enter your M-Pesa PIN to complete the deposit</div>
+  </div>
+
+</div>
+
+<script>
+  const form = document.getElementById('deposit-form');
+  const amountInput = document.getElementById('amount');
+  const phoneInput = document.getElementById('phone');
+  const chips = document.querySelectorAll('.chip');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorText = document.getElementById('error-text');
+  const statusPanel = document.getElementById('status-panel');
+  const statusTitle = document.getElementById('status-title');
+  const statusSub = document.getElementById('status-sub');
+
+  // Adjust to your deployed API base
+  const API_BASE = '/api/payments';
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      amountInput.value = chip.dataset.amount;
+    });
+  });
+
+  amountInput.addEventListener('input', () => {
+    amountInput.value = amountInput.value.replace(/[^0-9]/g, '');
+    chips.forEach(c => c.classList.toggle('active', c.dataset.amount === amountInput.value));
+  });
+
+  phoneInput.addEventListener('input', () => {
+    phoneInput.value = phoneInput.value.replace(/[^0-9\s]/g, '');
+  });
+
+  function showError(msg) {
+    errorText.textContent = msg;
+    errorText.style.display = 'block';
+  }
+  function clearError() {
+    errorText.style.display = 'none';
+  }
+
+  function setStatus(state, title, sub) {
+    statusPanel.classList.remove('success', 'failed');
+    if (state) statusPanel.classList.add(state);
+    statusTitle.textContent = title;
+    statusSub.textContent = sub;
+    statusPanel.classList.add('show');
+  }
+
+  async function pollStatus(reference, attempts = 0) {
+    if (attempts > 40) { // ~2 minutes at 3s intervals
+      setStatus('failed', 'Taking longer than expected', 'Check your wallet history shortly, or try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Deposit via M-Pesa';
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/status/${reference}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` }
+      });
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        setStatus('success', 'Deposit successful', 'Your wallet has been credited.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Deposit via M-Pesa';
+        return;
+      }
+      if (data.status === 'failed') {
+        setStatus('failed', 'Deposit failed', 'The transaction did not complete. You can try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Deposit via M-Pesa';
+        return;
+      }
+      // still pending
+      setTimeout(() => pollStatus(reference, attempts + 1), 3000);
+    } catch (err) {
+      setTimeout(() => pollStatus(reference, attempts + 1), 3000);
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+
+    const amountKES = parseInt(amountInput.value, 10);
+    const phoneDigits = phoneInput.value.replace(/\s/g, '');
+
+    if (!amountKES || amountKES < 50) {
+      showError('Enter an amount of at least KES 50');
+      return;
+    }
+    if (!/^[71]\d{8}$/.test(phoneDigits)) {
+      showError('Enter a valid M-Pesa number, e.g. 712345678');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending request...';
+
+    try {
+      const res = await fetch(`${API_BASE}/deposit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({ amountKES, phone: '0' + phoneDigits })
+      });
+      const data = await res.json();
+
+      if (!data.success) {
+        showError(data.message || 'Could not start deposit. Try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Deposit via M-Pesa';
+        return;
+      }
+
+      setStatus(null, 'Check your phone', data.displayText || 'Enter your M-Pesa PIN to complete the deposit');
+      pollStatus(data.reference);
+    } catch (err) {
+      showError('Network error. Check your connection and try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Deposit via M-Pesa';
+    }
+  });
+</script>
+</body>
+      </html>
+  
