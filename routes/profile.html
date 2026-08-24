@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MordeHost · Profile</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --text:#080808;
+  --muted:#777;
+  --border:#e5e5e5;
+  --black:#050505;
+  --danger:#b91c1c;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:265px;
+  background:#050505;
+  color:#fff;
+  padding:20px 14px;
+  overflow-y:auto;
+  z-index:100;
+  transition:.25s ease;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 10px 22px;
+  font-size:21px;
+  font-weight:950;
+}
+
+.logo-box{
+  width:39px;
+  height:39px;
+  border-radius:11px;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
+
+.sidebar-user{
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:14px 12px;
+  margin-bottom:17px;
+}
+
+.sidebar-avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  margin-bottom:9px;
+}
+
+.sidebar-name{
+  font-size:14px;
+  font-weight:900;
+}
+
+.sidebar-email{
+  color:#858585;
+  font-size:12px;
+  margin-top:4px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-title{
+  color:#666;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:13px 12px 6px;
+}
+
+.nav a,
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#a7a7a7;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  text-align:left;
+}
+
+.nav a:hover,
+.nav a.active,
+.nav button:hover{
+  background:#fff;
+  color:#000;
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  font-weight:900;
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main{
+  margin-left:265px;
+  min-height:100vh;
+}
+
+.topbar{
+  height:72px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.menu-btn{
+  display:none;
+  border:0;
+  background:transparent;
+  font-size:25px;
+  cursor:pointer;
+}
+
+.page-title{
+  font-size:14px;
+  font-weight:900;
+}
+
+.wallet-mini{
+  background:#000;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:900;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.content{
+  max-width:1100px;
+  margin:auto;
+  padding:30px;
+}
+
+.heading{
+  margin-bottom:24px;
+}
+
+.heading h1{
+  font-size:30px;
+  font-weight:950;
+}
+
+.heading p{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:7px;
+}
+
+
+/* =========================================
+   PROFILE HEADER
+========================================= */
+
+.profile-header{
+  background:#050505;
+  color:#fff;
+  border-radius:18px;
+  padding:28px;
+  display:flex;
+  align-items:center;
+  gap:22px;
+  margin-bottom:20px;
+}
+
+.big-avatar{
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:950;
+  flex-shrink:0;
+}
+
+.profile-name{
+  font-size:24px;
+  font-weight:950;
+}
+
+.profile-email{
+  color:#999;
+  font-size:13px;
+  margin-top:5px;
+}
+
+.profile-status{
+  display:inline-flex;
+  margin-top:11px;
+  padding:6px 10px;
+  border-radius:20px;
+  background:#fff;
+  color:#000;
+  font-size:10px;
+  font-weight:950;
+}
+
+
+/* =========================================
+   GRID
+========================================= */
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:22px;
+}
+
+.card.full{
+  grid-column:1/-1;
+}
+
+.card-title{
+  font-size:17px;
+  font-weight:950;
+  margin-bottom:5px;
+}
+
+.card-description{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:20px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.field{
+  margin-bottom:16px;
+}
+
+.field:last-child{
+  margin-bottom:0;
+}
+
+label{
+  display:block;
+  font-size:11px;
+  font-weight:900;
+  margin-bottom:7px;
+}
+
+input{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+  color:#000;
+  outline:none;
+  font:inherit;
+  font-size:13px;
+}
+
+input:focus{
+  border-color:#000;
+}
+
+input:disabled{
+  background:#f4f4f4;
+  color:#777;
+  cursor:not-allowed;
+}
+
+.primary-btn{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:13px;
+  background:#000;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.primary-btn:hover{
+  opacity:.88;
+}
+
+.primary-btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+
+/* =========================================
+   ACCOUNT STATS
+========================================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.stat{
+  background:#f6f6f6;
+  border-radius:12px;
+  padding:15px;
+}
+
+.stat-label{
+  color:#777;
+  font-size:10px;
+  font-weight:800;
+}
+
+.stat-value{
+  font-size:19px;
+  font-weight:950;
+  margin-top:5px;
+}
+
+
+/* =========================================
+   SECURITY
+========================================= */
+
+.security-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:15px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.security-row:last-child{
+  border-bottom:0;
+}
+
+.security-title{
+  font-size:13px;
+  font-weight:900;
+}
+
+.security-text{
+  color:#777;
+  font-size:11px;
+  margin-top:4px;
+}
+
+.security-btn{
+  padding:9px 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  background:#fff;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.security-btn:hover{
+  background:#f4f4f4;
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.message{
+  display:none;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:16px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.success{
+  background:#e9f8ef;
+  color:#166534;
+}
+
+.message.error{
+  background:#fcecec;
+  color:#991b1b;
+}
+
+
+/* =========================================
+   OVERLAY
+========================================= */
+
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:90;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:900px){
+
+  .sidebar{
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .overlay.show{
+    display:block;
+  }
+
+}
+
+@media(max-width:700px){
+
+  .content{
+    padding:20px 14px;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .page-title{
+    display:none;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .card.full{
+    grid-column:auto;
+  }
+
+  .profile-header{
+    padding:22px;
+  }
+
+  .big-avatar{
+    width:65px;
+    height:65px;
+    font-size:23px;
+  }
+
+  .profile-name{
+    font-size:20px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="logo">
+
+    <div class="logo-box">
+      M
+    </div>
+
+    MordeHost
+
+  </div>
+
+
+  <div class="sidebar-user">
+
+    <div class="sidebar-avatar" id="sidebarAvatar">
+      U
+    </div>
+
+    <div
+      class="sidebar-name"
+      id="sidebarName">
+      User
+    </div>
+
+    <div
+      class="sidebar-email"
+      id="sidebarEmail">
+      user@example.com
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <div class="nav-title">
+      Main
+    </div>
+
+    <a href="dashboard.html">
+      <span class="nav-icon">◆</span>
+      Dashboard
+    </a>
+
+    <a href="deploy.html">
+      <span class="nav-icon">+</span>
+      Deploy Bot
+    </a>
+
+    <a href="bots.html">
+      <span class="nav-icon">◈</span>
+      My Bots
+    </a>
+
+    <a href="logs.html">
+      <span class="nav-icon">≡</span>
+      Logs
+    </a>
+
+
+    <div class="nav-title">
+      Wallet
+    </div>
+
+    <a href="wallet.html">
+      <span class="nav-icon">$</span>
+      Wallet
+    </a>
+
+    <a href="transactions.html">
+      <span class="nav-icon">↕</span>
+      Transactions
+    </a>
+
+
+    <div class="nav-title">
+      Account
+    </div>
+
+    <a
+      href="profile.html"
+      class="active">
+
+      <span class="nav-icon">○</span>
+      Profile
+
+    </a>
+
+    <a href="settings.html">
+
+      <span class="nav-icon">⚙</span>
+      Settings
+
+    </a>
+
+    <button id="themeBtn">
+
+      <span class="nav-icon">◐</span>
+      Theme
+
+    </button>
+
+
+    <div class="nav-title">
+      Help
+    </div>
+
+    <a href="support.html">
+
+      <span class="nav-icon">?</span>
+      Support
+
+    </a>
+
+    <a href="about.html">
+
+      <span class="nav-icon">i</span>
+      About
+
+    </a>
+
+
+    <button id="logoutBtn">
+
+      <span class="nav-icon">↪</span>
+      Log Out
+
+    </button>
+
+  </nav>
+
+</aside>
+
+
+<div
+  class="overlay"
+  id="overlay">
+</div>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<div class="main">
+
+
+  <header class="topbar">
+
+    <div style="
+      display:flex;
+      align-items:center;
+      gap:14px;
+    ">
+
+      <button
+        class="menu-btn"
+        id="menuBtn">
+
+        ☰
+
+      </button>
+
+      <div class="page-title">
+        Profile
+      </div>
+
+    </div>
+
+
+    <a
+      href="wallet.html"
+      class="wallet-mini">
+
+      Wallet ·
+      <span id="topWallet">
+        KES 0.00
+      </span>
+
+    </a>
+
+  </header>
+
+
+  <main class="content">
+
+
+    <div class="heading">
+
+      <h1>
+        Profile
+      </h1>
+
+      <p>
+        Manage your MordeHost account information.
+      </p>
+
+    </div>
+
+
+    <!-- PROFILE HEADER -->
+
+    <section class="profile-header">
+
+      <div
+        class="big-avatar"
+        id="bigAvatar">
+
+        U
+
+      </div>
+
+
+      <div>
+
+        <div
+          class="profile-name"
+          id="profileName">
+
+          User
+
+        </div>
+
+        <div
+          class="profile-email"
+          id="profileEmail">
+
+          user@example.com
+
+        </div>
+
+        <div class="profile-status">
+          ACTIVE ACCOUNT
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div
+      id="message"
+      class="message">
+    </div>
+
+
+    <div class="grid">
+
+
+      <!-- =====================================
+           PERSONAL INFORMATION
+      ====================================== -->
+
+      <section class="card">
+
+        <div class="card-title">
+          Personal Information
+        </div>
+
+        <div class="card-description">
+          Update your account information.
+        </div>
+
+
+        <form id="profileForm">
+
+          <div class="field">
+
+            <label for="name">
+              Full Name
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              placeholder="Your name"
+              maxlength="80"
+              required>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="username">
+              Username
+            </label>
+
+            <input
+              id="username"
+              type="text"
+              placeholder="Username"
+              maxlength="40"
+              disabled>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="email">
+              Email Address
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              disabled>
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="primary-btn"
+            id="saveBtn">
+
+            Save Changes
+
+          </button>
+
+        </form>
+
+      </section>
+
+
+      <!-- =====================================
+           ACCOUNT
+      ====================================== -->
+
+      <section class="card">
+
+        <div class="card-title">
+          Account Overview
+        </div>
+
+        <div class="card-description">
+          Your current MordeHost account information.
+        </div>
+
+
+        <div class="stats">
+
+          <div class="stat">
+
+            <div class="stat-label">
+              Wallet Balance
+            </div>
+
+            <div
+              class="stat-value"
+              id="walletBalance">
+
+              KES 0.00
+
+            </div>
+
+          </div>
+
+
+          <div class="stat">
+
+            <div class="stat-label">
+              Total Bots
+            </div>
+
+            <div
+              class="stat-value"
+              id="botCount">
+
+              0
+
+            </div>
+
+          </div>
+
+
+          <div class="stat">
+
+            <div class="stat-label">
+              Account Status
+            </div>
+
+            <div
+              class="stat-value">
+
+              Active
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           SECURITY
+      ====================================== -->
+
+      <section class="card full">
+
+        <div class="card-title">
+          Security
+        </div>
+
+        <div class="card-description">
+          Manage your account security.
+        </div>
+
+
+        <div class="security-row">
+
+          <div>
+
+            <div class="security-title">
+              Password
+            </div>
+
+            <div class="security-text">
+              Change your account password.
+            </div>
+
+          </div>
+
+          <button
+            class="security-btn"
+            id="passwordBtn">
+
+            Change Password
+
+          </button>
+
+        </div>
+
+
+        <div class="security-row">
+
+          <div>
+
+            <div class="security-title">
+              Active Session
+            </div>
+
+            <div class="security-text">
+              Your current login session is active.
+            </div>
+
+          </div>
+
+          <span
+            class="profile-status"
+            style="
+              margin:0;
+              background:#050505;
+              color:#fff;
+            ">
+
+            ACTIVE
+
+          </span>
+
+        </div>
+
+
+        <div class="security-row">
+
+          <div>
+
+            <div class="security-title">
+              Sign Out
+            </div>
+
+            <div class="security-text">
+              End your current MordeHost session.
+            </div>
+
+          </div>
+
+          <button
+            class="security-btn"
+            id="securityLogout">
+
+            Log Out
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   API CONFIG
+========================================= */
+
+const API_BASE = "/api";
+
+
+/* =========================================
+   TOKEN
+========================================= */
+
+function getToken(){
+
+  return (
+
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    sessionStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    localStorage.getItem(
+      "token"
+    )
+
+  );
+
+}
+
+
+/* =========================================
+   API REQUEST
+========================================= */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+
+  const headers = {
+
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+
+  };
+
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+
+  const response =
+    await fetch(
+      API_BASE + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data={};
+
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data={};
+
+  }
+
+
+  if(
+    response.status === 401
+  ){
+
+    clearSession();
+
+    window.location.replace(
+      "login.html"
+    );
+
+    throw new Error(
+      "Session expired."
+    );
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* =========================================
+   LOAD PROFILE
+========================================= */
+
+async function loadProfile(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+
+    const user =
+      data.user ||
+      data;
+
+
+    renderUser(
+      user
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "Profile API:",
+      error.message
+    );
+
+
+    loadStoredUser();
+
+  }
+
+}
+
+
+/* =========================================
+   RENDER USER
+========================================= */
+
+function renderUser(
+  user
+){
+
+  const name =
+    user.name ||
+    user.username ||
+    "User";
+
+
+  const email =
+    user.email ||
+    "Account";
+
+
+  document.getElementById(
+    "name"
+  ).value =
+    user.name ||
+    "";
+
+
+  document.getElementById(
+    "username"
+  ).value =
+    user.username ||
+    "";
+
+
+  document.getElementById(
+    "email"
+  ).value =
+    email;
+
+
+  document.getElementById(
+    "profileName"
+  ).textContent =
+    name;
+
+
+  document.getElementById(
+    "profileEmail"
+  ).textContent =
+    email;
+
+
+  document.getElementById(
+    "sidebarName"
+  ).textContent =
+    name;
+
+
+  document.getElementById(
+    "sidebarEmail"
+  ).textContent =
+    email;
+
+
+  const initial =
+    name
+      .charAt(0)
+      .toUpperCase();
+
+
+  document.getElementById(
+    "bigAvatar"
+  ).textContent =
+    initial;
+
+
+  document.getElementById(
+    "sidebarAvatar"
+  ).textContent =
+    initial;
+
+
+  const balance =
+    Number(
+      user.walletBalance ||
+      user.balance ||
+      0
+    );
+
+
+  updateWallet(
+    balance
+  );
+
+}
+
+
+/* =========================================
+   STORED USER
+========================================= */
+
+function loadStoredUser(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        "mordehost_user"
+      ) ||
+
+      localStorage.getItem(
+        "mordehostUser"
+      );
+
+
+    if(!raw){
+
+      return;
+
+    }
+
+
+    const user =
+      JSON.parse(
+        raw
+      );
+
+
+    renderUser(
+      user
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "Stored profile:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   WALLET
+========================================= */
+
+function updateWallet(
+  amount
+){
+
+  const money =
+    `KES ${Number(
+      amount || 0
+    ).toLocaleString(
+      "en-KE",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )}`;
+
+
+  document.getElementById(
+    "topWallet"
+  ).textContent =
+    money;
+
+
+  document.getElementById(
+    "walletBalance"
+  ).textContent =
+    money;
+
+}
+
+
+/* =========================================
+   LOAD BOT COUNT
+========================================= */
+
+async function loadBotCount(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/bots"
+      );
+
+
+    const bots =
+      Array.isArray(data)
+        ? data
+        : (
+            data.bots ||
+            []
+          );
+
+
+    document.getElementById(
+      "botCount"
+    ).textContent =
+      bots.length;
+
+  }catch(error){
+
+    console.log(
+      "Bot count:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   SAVE PROFILE
+========================================= */
+
+document
+  .getElementById(
+    "profileForm"
+  )
+  .addEventListene
