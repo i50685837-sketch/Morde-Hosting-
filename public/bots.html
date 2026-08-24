@@ -1427,31 +1427,461 @@ function renderBots(
               botId
             )}">
 
-            <div class="bot-top">
+                              </div>
 
-              <div class="bot-info">
-
-                <div class="bot-icon">
-                  ◆
                 </div>
 
-                <div>
+              </div>
 
-                  <div class="bot-name">
 
-                    ${escapeHtml(
-                      botName
-                    )}
+              <!-- STATUS -->
 
-                  </div>
+              <div
+                class="status ${statusClass}">
 
-                  <div class="bot-id">
+                <span
+                  class="status-dot">
+                </span>
 
-                    ID:
-                    ${escapeHtml(
-                      botId || "—"
-                    )}
+                ${statusText}
 
-                  </div>
+              </div>
+
+            </div>
+
+
+            <!-- BOT DETAILS -->
+
+            <div class="bot-details">
+
+              <div>
+
+                <div class="detail-label">
+                  Runtime
+                </div>
+
+                <div class="detail-value">
+                  ${escapeHtml(runtime)}
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div class="detail-label">
+                  Created
+                </div>
+
+                <div class="detail-value">
+                  ${escapeHtml(created)}
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div class="detail-label">
+                  Phone
+                </div>
+
+                <div class="detail-value">
+                  ${escapeHtml(phone)}
+                </div>
+
+              </div>
+
+
+              <div>
+
+                <div class="detail-label">
+                  Session
+                </div>
+
+                <div class="detail-value">
+                  ${escapeHtml(session)}
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- BOT ACTIONS -->
+
+            <div class="bot-actions">
+
+              <button
+                class="action-btn"
+                onclick="viewLogs(
+                  '${escapeAttr(botId)}'
+                )">
+
+                Logs
+
+              </button>
+
+
+              ${
+                isOnline
+                ? `
+
+                  <button
+                    class="action-btn"
+                    onclick="restartBot(
+                      '${escapeAttr(botId)}'
+                    )">
+
+                    Restart
+
+                  </button>
+
+                `
+                : `
+
+                  <button
+                    class="action-btn"
+                    ${
+                      isDeploying
+                        ? "disabled"
+                        : ""
+                    }
+                    onclick="startBot(
+                      '${escapeAttr(botId)}'
+                    )">
+
+                    ${
+                      isDeploying
+                        ? "Deploying..."
+                        : "Start"
+                    }
+
+                  </button>
+
+                `
+              }
+
+
+              <button
+                class="action-btn danger"
+                onclick="deleteBot(
+                  '${escapeAttr(botId)}'
+                )">
+
+                Delete
+
+              </button>
+
+            </div>
+
+          </article>
+
+        `;
+
+      }
+
+    ).join("");
+
+}
+
+
+/* =========================================
+   START BOT
+========================================= */
+
+async function startBot(id){
+
+  if(!id) return;
+
+  try{
+
+    showToast(
+      "Starting bot..."
+    );
+
+    await apiRequest(
+      `/bots/${encodeURIComponent(id)}/start`,
+      {
+        method:"POST"
+      }
+    );
+
+    showToast(
+      "Bot started successfully."
+    );
+
+    await loadBots();
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      error.message ||
+      "Unable to start bot."
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   RESTART BOT
+========================================= */
+
+async function restartBot(id){
+
+  if(!id) return;
+
+  try{
+
+    showToast(
+      "Restarting bot..."
+    );
+
+    await apiRequest(
+      `/bots/${encodeURIComponent(id)}/restart`,
+      {
+        method:"POST"
+      }
+    );
+
+    showToast(
+      "Bot restart requested."
+    );
+
+    await loadBots();
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      error.message ||
+      "Unable to restart bot."
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   DELETE BOT
+========================================= */
+
+async function deleteBot(id){
+
+  if(!id) return;
+
+  const confirmed =
+    confirm(
+      "Are you sure you want to delete this bot?"
+    );
+
+  if(!confirmed) return;
+
+
+  try{
+
+    showToast(
+      "Deleting bot..."
+    );
+
+    await apiRequest(
+      `/bots/${encodeURIComponent(id)}`,
+      {
+        method:"DELETE"
+      }
+    );
+
+    showToast(
+      "Bot deleted successfully."
+    );
+
+    await loadBots();
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      error.message ||
+      "Unable to delete bot."
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   VIEW LOGS
+========================================= */
+
+function viewLogs(id){
+
+  if(!id) return;
+
+  window.location.href =
+    `logs.html?bot=${encodeURIComponent(id)}`;
+
+}
+
+
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+document
+  .getElementById("menuBtn")
+  .addEventListener(
+    "click",
+    function(){
+
+      document
+        .getElementById("sidebar")
+        .classList
+        .add("open");
+
+      document
+        .getElementById("overlay")
+        .classList
+        .add("show");
+
+    }
+  );
+
+
+document
+  .getElementById("overlay")
+  .addEventListener(
+    "click",
+    function(){
+
+      document
+        .getElementById("sidebar")
+        .classList
+        .remove("open");
+
+      document
+        .getElementById("overlay")
+        .classList
+        .remove("show");
+
+    }
+  );
+
+
+/* =========================================
+   THEME
+========================================= */
+
+function applyTheme(){
+
+  const theme =
+    localStorage.getItem(
+      "mordehost_theme"
+    ) || "system";
+
+
+  const dark =
+    theme === "dark" ||
+    (
+      theme === "system" &&
+      window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches
+    );
+
+
+  document.documentElement
+    .classList
+    .toggle(
+      "dark",
+      dark
+    );
+
+}
+
+
+applyTheme();
+
+
+/* =========================================
+   THEME BUTTON
+========================================= */
+
+document
+  .getElementById("themeBtn")
+  .addEventListener(
+    "click",
+    function(){
+
+      window.location.href =
+        "settings.html#theme";
+
+    }
+  );
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener(
+    "click",
+    function(){
+
+      if(
+        confirm(
+          "Are you sure you want to log out?"
+        )
+      ){
+
+        logout();
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+async function init(){
+
+  if(!getToken()){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+
+  await Promise.all([
+
+    loadUser(),
+
+    loadBots()
+
+  ]);
+
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
 
          
