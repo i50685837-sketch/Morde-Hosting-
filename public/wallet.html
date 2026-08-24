@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wallet · MordeHost</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --dark:#050505;
+  --dark2:#111111;
+  --success:#16a34a;
+  --danger:#dc2626;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+  height:70px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 24px;
+
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  font-size:20px;
+  font-weight:900;
+}
+
+.logo{
+  width:38px;
+  height:38px;
+
+  background:#000;
+  color:#fff;
+
+  border-radius:10px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:900;
+}
+
+.back{
+  text-decoration:none;
+  color:#111;
+
+  font-weight:700;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+  width:min(1100px,92%);
+  margin:35px auto;
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+.title{
+  margin-bottom:25px;
+}
+
+.title h1{
+  font-size:32px;
+  font-weight:900;
+}
+
+.title p{
+  color:var(--muted);
+  margin-top:7px;
+}
+
+
+/* =========================
+   GRID
+========================= */
+
+.grid{
+  display:grid;
+
+  grid-template-columns:
+    1.4fr 1fr;
+
+  gap:22px;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+  background:var(--card);
+
+  border:1px solid var(--border);
+
+  border-radius:18px;
+
+  padding:25px;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.04);
+}
+
+
+/* =========================
+   BALANCE
+========================= */
+
+.balance-card{
+  background:#000;
+  color:#fff;
+
+  min-height:220px;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.balance-label{
+  color:#aaa;
+  font-size:14px;
+}
+
+.balance{
+  font-size:42px;
+  font-weight:900;
+
+  margin-top:10px;
+}
+
+.currency{
+  font-size:14px;
+  color:#aaa;
+}
+
+.refresh{
+  border:1px solid #333;
+  background:#151515;
+  color:#fff;
+
+  padding:10px 15px;
+
+  border-radius:9px;
+
+  cursor:pointer;
+
+  font-weight:700;
+}
+
+
+/* =========================
+   DEPOSIT
+========================= */
+
+.card h2{
+  font-size:20px;
+  margin-bottom:8px;
+}
+
+.card-description{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+.input{
+  width:100%;
+
+  padding:14px 15px;
+
+  border:1px solid var(--border);
+
+  border-radius:10px;
+
+  font-size:16px;
+
+  outline:none;
+}
+
+.input:focus{
+  border-color:#000;
+}
+
+
+.primary{
+  width:100%;
+
+  margin-top:12px;
+
+  padding:14px;
+
+  border:0;
+
+  border-radius:10px;
+
+  background:#000;
+
+  color:#fff;
+
+  font-weight:800;
+
+  font-size:15px;
+
+  cursor:pointer;
+}
+
+.primary:hover{
+  background:#222;
+}
+
+.primary:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message{
+  display:none;
+
+  margin-top:15px;
+
+  padding:12px;
+
+  border-radius:9px;
+
+  font-size:14px;
+}
+
+.message.success{
+  display:block;
+
+  background:#dcfce7;
+  color:#166534;
+}
+
+.message.error{
+  display:block;
+
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+
+/* =========================
+   TRANSACTIONS
+========================= */
+
+.transactions{
+  margin-top:22px;
+}
+
+.transaction{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  gap:15px;
+
+  padding:17px 0;
+
+  border-bottom:1px solid var(--border);
+}
+
+.transaction:last-child{
+  border-bottom:0;
+}
+
+.tx-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.tx-icon{
+  width:40px;
+  height:40px;
+
+  border-radius:10px;
+
+  background:#f1f1f1;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:900;
+}
+
+.tx-title{
+  font-weight:800;
+}
+
+.tx-date{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:3px;
+}
+
+.tx-amount{
+  font-weight:900;
+}
+
+.tx-amount.deposit{
+  color:var(--success);
+}
+
+.tx-amount.withdrawal{
+  color:var(--danger);
+}
+
+.status{
+  font-size:11px;
+
+  font-weight:800;
+
+  margin-top:4px;
+
+  text-transform:uppercase;
+}
+
+.status.success{
+  color:var(--success);
+}
+
+.status.pending{
+  color:#ca8a04;
+}
+
+.status.failed{
+  color:var(--danger);
+}
+
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+  text-align:center;
+
+  padding:35px 10px;
+
+  color:var(--muted);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:750px){
+
+  .header{
+    padding:0 15px;
+  }
+
+  .main{
+    width:94%;
+    margin:25px auto;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .title h1{
+    font-size:27px;
+  }
+
+  .balance{
+    font-size:36px;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+  <div class="brand">
+
+    <div class="logo">
+      M
+    </div>
+
+    MordeHost
+
+  </div>
+
+
+  <a
+    href="dashboard.html"
+    class="back">
+
+    ← Dashboard
+
+  </a>
+
+</header>
+
+
+
+<main class="main">
+
+
+  <div class="title">
+
+    <h1>
+      Wallet
+    </h1>
+
+    <p>
+      Manage your MordeHost wallet and payments.
+    </p>
+
+  </div>
+
+
+
+  <div class="grid">
+
+
+    <!-- BALANCE -->
+
+    <section class="card balance-card">
+
+      <div>
+
+        <div class="balance-label">
+          Available Balance
+        </div>
+
+        <div
+          class="balance"
+          id="walletBalance">
+
+          KES 0.00
+
+        </div>
+
+        <div class="currency">
+          Kenyan Shillings
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <button
+          class="refresh"
+          id="refreshBtn">
+
+          ↻ Refresh Balance
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- DEPOSIT -->
+
+    <section class="card">
+
+      <h2>
+        Add Funds
+      </h2>
+
+      <p class="card-description">
+
+        Deposit funds securely through Paystack.
+
+      </p>
+
+
+      <input
+        id="amount"
+        class="input"
+        type="number"
+        min="1"
+        step="1"
+        placeholder="Enter amount in KES"
+      />
+
+
+      <button
+        class="primary"
+        id="depositBtn">
+
+        Continue with Paystack
+
+      </button>
+
+
+      <div
+        id="message"
+        class="message">
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  <!-- TRANSACTIONS -->
+
+  <section class="card transactions">
+
+    <h2>
+      Transaction History
+    </h2>
+
+    <p class="card-description">
+
+      Your latest wallet activity.
+
+    </p>
+
+
+    <div id="transactions">
+
+      <div class="empty">
+        Loading transactions...
+      </div>
+
+    </div>
+
+  </section>
+
+
+</main>
+
+
+
+<script>
+
+/* =========================
+   CONFIG
+========================= */
+
+const API_BASE =
+  "/api";
+
+
+/* =========================
+   TOKEN
+========================= */
+
+function getToken(){
+
+  return (
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    sessionStorage.getItem(
+      "mordehost_token"
+    )
+  );
+
+}
+
+
+/* =========================
+   API
+========================= */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    window.location.href =
+      "login.html";
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+
+  const headers = {
+
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+
+  };
+
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+
+  const response =
+    await fetch(
+      API_BASE + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data = {};
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data = {};
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* =========================
+   FORMAT MONEY
+========================= */
+
+function formatMoney(
+  amount
+){
+
+  return (
+    "KES " +
+    Number(
+      amount || 0
+    ).toLocaleString(
+      "en-KE",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )
+  );
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(
+  text,
+  type
+){
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  message.textContent =
+    text;
+
+  message.className =
+    `message ${type}`;
+
+}
+
+
+/* =========================
+   LOAD BALANCE
+========================= */
+
+async function loadBalance(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/wallet"
+      );
+
+
+    document.getElementById(
+      "walletBalance"
+    ).textContent =
+      formatMoney(
+        data.balance
+      );
+
+  }catch(error){
+
+    console.error(
+      "Balance error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   LOAD TRANSACTIONS
+========================= */
+
+async function loadTransactions(){
+
+  const container =
+    document.getElementById(
+      "transactions"
+    );
+
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/wallet/transactions"
+      );
+
+
+    const transactions =
+      Array.isArray(
+        data.transactions
+      )
+      ? data.transactions
+      : [];
+
+
+    if(!transactions.length){
+
+      container.innerHTML = `
+
+        <div class="empty">
+
+          No transactions yet.
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    container.innerHTML =
+      transactions.map(
+        tx => {
+
+          const type =
+            tx.type ===
+            "deposit"
+              ? "deposit"
+              : "withdrawal";
+
+
+          const sign =
+            type === "deposit"
+              ? "+"
+              : "-";
+
+
+          const date =
+            tx.createdAt
+              ? new Date(
+                  tx.createdAt
+                ).toLocaleString(
+                  "en-KE"
+                )
+              : "—";
+
+
+          return `
+
+            <div class="transaction">
+
+              <div class="tx-left">
+
+                <div class="tx-icon">
+                  ${type === "deposit"
+                    ? "↓"
+                    : "↑"}
+                </div>
+
+                <div>
+
+                  <div class="tx-title">
+
+                    ${
+                      type === "deposit"
+                        ? "Wallet Deposit"
+                        : "Withdrawal"
+                    }
+
+                  </div>
+
+                  <div class="tx-date">
+
+                    ${date}
+
+                  </div>
+
+                  <div
+                    class="status ${
+                      tx.status || "pending"
+                    }">
+
+                    ${tx.status || "pending"}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div
+                class="tx-amount ${type}">
+
+                ${sign}${formatMoney(
+                  tx.amount
+                )}
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      ).join("");
+
+
+  }catch(error){
+
+    container.innerHTML = `
+
+      <div class="empty">
+
+        Unable to load transactions.
+
+      </div>
+
+    `;
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   DEPOSIT
+========================= */
+
+async function deposit(){
+
+  const input =
+    document.getElementById(
+      "amount"
+    );
+
+  const button =
+    document.getElementById(
+      "depositBtn"
+    );
+
+
+  const amount =
+    Number(
+      input.value
+    );
+
+
+  if(
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ){
+
+    showMessage(
+      "Enter a valid amount.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "Opening Paystack...";
+
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/wallet/deposit",
+        {
+          method:"POST",
+
+          body:JSON.stringify({
+            amount
+          })
+        }
+      );
+
+
+    if(
+      data.authorization_url
+    ){
+
+      /*
+       * Save reference so the
+       * return page can verify it.
+       */
+
+      sessionStorage.setItem(
+        "mordehost_payment_reference",
+        data.reference
+      );
+
+
+      window.location.href =
+        data.authorization_url;
+
+      return;
+
+    }
+
+
+    throw new Error(
+      "Paystack payment URL was not returned."
+    );
+
+
+  }catch(error){
+
+    showMessage(
+      error.message,
+      "error"
+    );
+
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Continue with Paystack";
+
+  }
+
+}
+
+
+/* =========================
+   VERIFY RETURN PAYMENT
+========================= */
+
+async function verifyReturnedPayment(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const reference =
+    params.get(
+      "reference"
+    ) ||
+    params.get(
+      "trxref"
+    ) ||
+    sessionStorage.getItem(
+      "mordehost_payment_reference"
+    );
+
+
+  if(!reference){
+    return;
+  }
+
+
+  try{
+
+    showMessage(
+      "Verifying your Paystack payment...",
+      "success"
+    );
+
+
+    const data =
+      await apiRequest(
+        `/wallet/verify/${encodeURIComponent(
+          reference
+        )}`
+      );
+
+
+    if(
+      data.status ===
+      "success"
+    ){
+
+      showMessage(
+        `Payment successful. ${formatMoney(
+          data.amount
+        )} added to your wallet.`,
+        "success"
+      );
+
+
+      sessionStorage.removeItem(
+        "mordehost_payment_reference"
+      );
+
+
+      await loadBalance();
+
+      await loadTransactions();
+
+    }
+
+  }catch(error){
+
+    showMessage(
+      error.message ||
+      "Payment verification failed.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================
+   EVENTS
+========================= */
+
+document
+  .getElementById(
+    "depositBtn"
+  )
+  .addEventListener(
+    "click",
+    deposit
+  );
+
+
+document
+  .getElementById(
+    "refreshBtn"
+  )
+  .addEventListener(
+    "click",
+    async()=>{
+
+      await loadBalance();
+
+      await loadTransactions();
+
+    }
+  );
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+async function init(){
+
+  if(!getToken()){
+
+    window.location.href =
+      "login.html";
+
+    return;
+
+  }
+
+
+  await loadBalance();
+
+  await loadTransactions();
+
+  await verifyReturnedPayment();
+
+}
+
+
+init();
+
+</script>
+
+</body>
+  </html>
