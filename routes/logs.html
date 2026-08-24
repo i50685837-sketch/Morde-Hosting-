@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MordeHost · Logs</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#080808;
+  --muted:#737373;
+  --border:#e5e5e5;
+  --black:#050505;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:265px;
+  background:#050505;
+  color:#fff;
+  padding:20px 14px;
+  z-index:100;
+  overflow-y:auto;
+  transition:.25s ease;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 10px 22px;
+  font-size:21px;
+  font-weight:950;
+}
+
+.logo-box{
+  width:39px;
+  height:39px;
+  border-radius:11px;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
+
+.sidebar-user{
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:14px 12px;
+  margin-bottom:17px;
+}
+
+.sidebar-avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  margin-bottom:9px;
+}
+
+.sidebar-name{
+  font-size:14px;
+  font-weight:900;
+}
+
+.sidebar-email{
+  color:#858585;
+  font-size:12px;
+  margin-top:4px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-title{
+  color:#666;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:13px 12px 6px;
+}
+
+.nav a,
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#a7a7a7;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  text-align:left;
+}
+
+.nav a:hover,
+.nav a.active,
+.nav button:hover{
+  background:#fff;
+  color:#000;
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  font-weight:900;
+}
+
+/* MAIN */
+
+.main{
+  margin-left:265px;
+  min-height:100vh;
+}
+
+.topbar{
+  height:72px;
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.menu-btn{
+  display:none;
+  border:0;
+  background:transparent;
+  font-size:25px;
+  cursor:pointer;
+}
+
+.page-title{
+  font-size:14px;
+  font-weight:900;
+}
+
+.wallet-mini{
+  background:#000;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:900;
+}
+
+/* CONTENT */
+
+.content{
+  max-width:1200px;
+  margin:auto;
+  padding:30px;
+}
+
+.heading{
+  margin-bottom:22px;
+}
+
+.heading h1{
+  font-size:30px;
+  font-weight:950;
+}
+
+.heading p{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:7px;
+}
+
+/* LOG CARD */
+
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.toolbar{
+  padding:17px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+select{
+  min-width:230px;
+  padding:11px 13px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  background:#fff;
+  color:#000;
+  font:inherit;
+  font-size:12px;
+  font-weight:700;
+  outline:none;
+}
+
+select:focus{
+  border-color:#000;
+}
+
+.tool-btn{
+  border:1px solid var(--border);
+  background:#fff;
+  color:#000;
+  padding:11px 14px;
+  border-radius:9px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:900;
+}
+
+.tool-btn:hover{
+  background:#f2f2f2;
+}
+
+.tool-btn.dark{
+  background:#000;
+  color:#fff;
+  border-color:#000;
+}
+
+.tool-btn.danger{
+  color:#b91c1c;
+}
+
+.log-meta{
+  margin-left:auto;
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* TERMINAL */
+
+.terminal{
+  background:#050505;
+  color:#ddd;
+  min-height:560px;
+  max-height:650px;
+  overflow:auto;
+  padding:18px;
+  font-family:
+    "Courier New",
+    monospace;
+  font-size:12px;
+  line-height:1.7;
+}
+
+.terminal-header{
+  color:#777;
+  margin-bottom:15px;
+  user-select:none;
+}
+
+.log-line{
+  white-space:pre-wrap;
+  word-break:break-word;
+  padding:2px 0;
+}
+
+.log-time{
+  color:#777;
+}
+
+.log-info{
+  color:#ddd;
+}
+
+.log-success{
+  color:#9ae6b4;
+}
+
+.log-error{
+  color:#fca5a5;
+}
+
+.log-warning{
+  color:#fde68a;
+}
+
+.empty{
+  color:#777;
+  padding:40px 10px;
+  text-align:center;
+}
+
+.loading{
+  color:#aaa;
+}
+
+/* OVERLAY */
+
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:90;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+  .sidebar{
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .overlay.show{
+    display:block;
+  }
+
+}
+
+@media(max-width:600px){
+
+  .content{
+    padding:20px 14px;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .page-title{
+    display:none;
+  }
+
+  .heading h1{
+    font-size:25px;
+  }
+
+  .toolbar{
+    align-items:stretch;
+  }
+
+  select{
+    width:100%;
+  }
+
+  .tool-btn{
+    flex:1;
+  }
+
+  .log-meta{
+    width:100%;
+    margin-left:0;
+  }
+
+  .terminal{
+    min-height:500px;
+    font-size:11px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="logo">
+    <div class="logo-box">M</div>
+    MordeHost
+  </div>
+
+  <div class="sidebar-user">
+
+    <div class="sidebar-avatar" id="sidebarAvatar">
+      U
+    </div>
+
+    <div class="sidebar-name" id="sidebarName">
+      User
+    </div>
+
+    <div class="sidebar-email" id="sidebarEmail">
+      user@example.com
+    </div>
+
+  </div>
+
+  <nav class="nav">
+
+    <div class="nav-title">Main</div>
+
+    <a href="dashboard.html">
+      <span class="nav-icon">◆</span>
+      Dashboard
+    </a>
+
+    <a href="deploy.html">
+      <span class="nav-icon">+</span>
+      Deploy Bot
+    </a>
+
+    <a href="bots.html">
+      <span class="nav-icon">◈</span>
+      My Bots
+    </a>
+
+    <a href="logs.html" class="active">
+      <span class="nav-icon">≡</span>
+      Logs
+    </a>
+
+    <div class="nav-title">Wallet</div>
+
+    <a href="wallet.html">
+      <span class="nav-icon">$</span>
+      Wallet
+    </a>
+
+    <a href="transactions.html">
+      <span class="nav-icon">↕</span>
+      Transactions
+    </a>
+
+    <div class="nav-title">Account</div>
+
+    <a href="profile.html">
+      <span class="nav-icon">○</span>
+      Profile
+    </a>
+
+    <a href="settings.html">
+      <span class="nav-icon">⚙</span>
+      Settings
+    </a>
+
+    <button id="themeBtn">
+      <span class="nav-icon">◐</span>
+      Theme
+    </button>
+
+    <div class="nav-title">Help</div>
+
+    <a href="support.html">
+      <span class="nav-icon">?</span>
+      Support
+    </a>
+
+    <a href="about.html">
+      <span class="nav-icon">i</span>
+      About
+    </a>
+
+    <button id="logoutBtn">
+      <span class="nav-icon">↪</span>
+      Log Out
+    </button>
+
+  </nav>
+
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+  <header class="topbar">
+
+    <div style="
+      display:flex;
+      align-items:center;
+      gap:14px;
+    ">
+
+      <button class="menu-btn" id="menuBtn">
+        ☰
+      </button>
+
+      <div class="page-title">
+        Bot Logs
+      </div>
+
+    </div>
+
+    <a href="wallet.html" class="wallet-mini">
+      Wallet ·
+      <span id="topWallet">KES 0.00</span>
+    </a>
+
+  </header>
+
+  <main class="content">
+
+    <div class="heading">
+
+      <h1>
+        Bot Logs
+      </h1>
+
+      <p>
+        Monitor your bot output and deployment activity.
+      </p>
+
+    </div>
+
+
+    <section class="card">
+
+      <div class="toolbar">
+
+        <select id="botSelect">
+          <option value="">
+            Select a bot
+          </option>
+        </select>
+
+        <button
+          class="tool-btn dark"
+          id="refreshBtn">
+          ↻ Refresh
+        </button>
+
+        <button
+          class="tool-btn"
+          id="autoBtn">
+          Auto Refresh: OFF
+        </button>
+
+        <button
+          class="tool-btn danger"
+          id="clearBtn">
+          Clear
+        </button>
+
+        <div class="log-meta" id="logMeta">
+          No bot selected
+        </div>
+
+      </div>
+
+
+      <div class="terminal" id="terminal">
+
+        <div class="terminal-header">
+          MordeHost Bot Console
+          ─────────────────────────────
+        </div>
+
+        <div class="empty">
+          Select a bot to view its logs.
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<script>
+
+const API_BASE = "/api";
+
+let selectedBot = "";
+let autoRefresh = false;
+let refreshTimer = null;
+
+
+/* =========================================
+   AUTH
+========================================= */
+
+function getToken(){
+
+  return (
+    localStorage.getItem("mordehost_token") ||
+    sessionStorage.getItem("mordehost_token") ||
+    localStorage.getItem("token")
+  );
+
+}
+
+
+/* =========================================
+   API
+========================================= */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token = getToken();
+
+  if(!token){
+
+    window.location.replace("login.html");
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+  const headers = {
+    "Content-Type":"application/json",
+    ...(options.headers || {})
+  };
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+  const response =
+    await fetch(
+      API_BASE + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+  let data={};
+
+  try{
+    data=await response.json();
+  }catch{
+    data={};
+  }
+
+  if(response.status===401){
+
+    localStorage.removeItem(
+      "mordehost_token"
+    );
+
+    sessionStorage.removeItem(
+      "mordehost_token"
+    );
+
+    localStorage.removeItem("token");
+
+    window.location.replace(
+      "login.html"
+    );
+
+    throw new Error(
+      "Session expired."
+    );
+  }
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      "Request failed."
+    );
+
+  }
+
+  return data;
+
+}
+
+
+/* =========================================
+   LOAD USER
+========================================= */
+
+async function loadUser(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+    const user =
+      data.user || data;
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+    document.getElementById(
+      "sidebarName"
+    ).textContent=name;
+
+    document.getElementById(
+      "sidebarEmail"
+    ).textContent=
+      user.email || "Account";
+
+    document.getElementById(
+      "sidebarAvatar"
+    ).textContent=
+      name.charAt(0).toUpperCase();
+
+    updateWallet(
+      Number(
+        user.walletBalance || 0
+      )
+    );
+
+  }catch(error){
+
+    console.log(
+      "User load:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   WALLET
+========================================= */
+
+function updateWallet(amount){
+
+  const money =
+    `KES ${Number(
+      amount || 0
+    ).toLocaleString(
+      "en-KE",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )}`;
+
+  document.getElementById(
+    "topWallet"
+  ).textContent=money;
+
+}
+
+
+/* =========================================
+   LOAD BOTS
+========================================= */
+
+async function loadBots(){
+
+  const select =
+    document.getElementById(
+      "botSelect"
+    );
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/bots"
+      );
+
+    const bots =
+      Array.isArray(data)
+        ? data
+        : (data.bots || []);
+
+    select.innerHTML = `
+      <option value="">
+        Select a bot
+      </option>
+    `;
+
+    bots.forEach(bot=>{
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+      option.value =
+        bot._id ||
+        bot.id;
+
+      option.textContent =
+        bot.name ||
+        "Unnamed Bot";
+
+      select.appendChild(
+        option
+      );
+
+    });
+
+    if(selectedBot){
+
+      select.value =
+        selectedBot;
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Bots:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   LOAD LOGS
+========================================= */
+
+async function loadLogs(){
+
+  if(!selectedBot){
+
+    document.getElementById(
+      "terminal"
+    ).innerHTML=`
+
+      <div class="terminal-header">
+        MordeHost Bot Console
+        ─────────────────────────────
+      </div>
+
+      <div class="empty">
+        Select a bot to view its logs.
+      </div>
+
+    `;
+
+    document.getElementById(
+      "logMeta"
+    ).textContent=
+      "No bot selected";
+
+    return;
+
+  }
+
+
+  const terminal =
+    document.getElementById(
+      "terminal"
+    );
+
+
+  terminal.innerHTML=`
+
+    <div class="terminal-header">
+      MordeHost Bot Console
+      ─────────────────────────────
+    </div>
+
+    <div class="loading">
+      Loading logs...
+    </div>
+
+  `;
+
+
+  try{
+
+    const data =
+      await apiRequest(
+        `/bots/${encodeURIComponent(
+          selectedBot
+        )}/logs`
+      );
+
+
+    const logs =
+      Array.isArray(data)
+        ? data
+        : (
+            data.logs ||
+            []
+          );
+
+
+    if(!logs.length){
+
+      terminal.innerHTML=`
+
+        <div class="terminal-header">
+          MordeHost Bot Console
+          ─────────────────────────────
+        </div>
+
+        <div class="empty">
+          No logs available for this bot yet.
+        </div>
+
+      `;
+
+      document.getElementById(
+        "logMeta"
+      ).textContent=
+        "0 log entries";
+
+      return;
+
+    }
+
+
+    terminal.innerHTML=`
+
+      <div class="terminal-header">
+        MordeHost Bot Console
+        ─────────────────────────────
+      </div>
+
+    `;
+
+
+    logs.forEach(log=>{
+
+      const line =
+        document.createElement(
+          "div"
+        );
+
+      line.className =
+        "log-line";
+
+
+      const time =
+        log.timestamp ||
+        log.createdAt ||
+        "";
+
+
+      const message =
+        typeof log === "string"
+          ? log
+          : (
+              log.message ||
+              log.text ||
+              JSON.stringify(log)
+            );
+
+
+      const level =
+        (
+          log.level ||
+          ""
+        ).toLowerCase();
+
+
+      if(level==="error"){
+        line.classList.add(
+          "log-error"
+        );
+      }
+      else if(level==="warn"){
+        line.classList.add(
+          "log-warning"
+        );
+      }
+      else if(level==="success"){
+        line.classList.add(
+          "log-success"
+        );
+      }
+      else{
+        line.classList.add(
+          "log-info"
+        );
+      }
+
+
+      line.innerHTML=`
+
+        <span class="log-time">
+          ${escapeHtml(
+            formatTime(time)
+          )}
+        </span>
+
+        ${escapeHtml(message)}
+
+      `;
+
+
+      terminal.appendChild(
+        line
+      );
+
+    });
+
+
+    document.getElementById(
+      "logMeta"
+    ).textContent=
+      `${logs.length} log entries`;
+
+
+    terminal.scrollTop =
+      terminal.scrollHeight;
+
+
+  }catch(error){
+
+    console.error(
+      "Logs:",
+      error
+    );
+
+
+    terminal.innerHTML=`
+
+      <div class="terminal-header">
+        MordeHost Bot Console
+        ─────────────────────────────
+      </div>
+
+      <div class="log-error">
+        Unable to load logs:
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================
+   TIME
+========================================= */
+
+function formatTime(value){
+
+  if(!value){
+    return "";
+  }
+
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+
+    return `[${value}] `;
+
+  }
+
+  return `[${date.toLocaleTimeString()}] `;
+
+}
+
+
+/* =========================================
+   ESCAPE
+========================================= */
+
+function escapeHtml(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================
+   BOT CHANGE
+========================================= */
+
+document
+  .getElementById("botSelect")
+  .addEventListener(
+    "change",
+    function(){
+
+      selectedBot =
+        this.value;
+
+      loadLogs();
+
+    }
+  );
+
+
+/* =========================================
+   REFRESH
+========================================= */
+
+document
+  .getElementById("refreshBtn")
+  .addEventListener(
+    "click",
+    loadLogs
+  );
+
+
+/* =========================================
+   CLEAR DISPLAY
+========================================= */
+
+document
+  .getElementById("clearBtn")
+  .addEventListener(
+    "click",
+    function(){
+
+      const terminal =
+        document.getElementById(
+          "terminal"
+        );
+
+      terminal.innerHTML=`
+
+        <div class="terminal-header">
+          MordeHost Bot Console
+          ─────────────────────────────
+        </div>
+
+        <div class="empty">
+          Console cleared.
+          Refresh to load the logs again.
+        </div>
+
+      `;
+
+      document.getElementById(
+        "logMeta"
+      ).textContent=
+        "Console cleared";
+
+    }
+  );
+
+
+/* =========================================
+   AUTO REFRESH
+========================================= */
+
+document
+  .getElementById("autoBtn")
+  .addEventListener(
+    "click",
+    function(){
+
+      autoRefresh =
+        !autoRefresh;
+
+
+      this.textContent =
+        autoRefresh
+          ? "Auto Refresh: ON"
+          : "Auto Refresh: OFF";
+
+
+      if(refreshTimer){
+
+        clearInterval(
+          refreshTimer
+        );
+
+        refreshTimer=null;
+
+      }
+
+
+      if(autoRefresh){
+
+        refreshTimer =
+          setInterval(
+            loadLogs,
+            5000
+          );
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+const sidebar =
+  document.getElementById(
+    "sidebar"
+  );
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+document
+  .getElementById("menuBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+      sidebar.classList.add("open");
+      overlay.classList.add("show");
+    }
+  );
+
+overlay.addEventListener(
+  "click",
+  ()=>{
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+  }
+);
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      if(
+        !confirm(
+          "Are you sure you want to log out?"
+        )
+      ){
+        return;
+      }
+
+      localStorage.removeItem(
+        "mordehost_token"
+      );
+
+      sessionStorage.removeItem(
+        "mordehost_token"
+      );
+
+      localStorage.removeItem(
+        "token"
+      );
+
+      localStorage.removeItem(
+        "mordehost_user"
+      );
+
+      localStorage.removeItem(
+        "mordehostUser"
+      );
+
+      window.location.replace(
+        "login.html"
+      );
+
+    }
+  );
+
+
+/* =========================================
+   THEME
+========================================= */
+
+document
+  .getElementById("themeBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+      window.location.href=
+        "settings.html#theme";
+    }
+  );
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+async function init(){
+
+  if(!getToken()){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+  await loadUser();
+
+  await loadBots();
+
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
+
+</script>
+
+</body>
+          </html>
