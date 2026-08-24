@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050505">
+  <title>Login · MordeHost</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #050505;
+      --card: #0d0d0d;
+      --border: #242424;
+      --text: #fff;
+      --muted: #888;
+      --green: #00ff88;
+      --green-dark: #0b2418;
+      --danger: #ff4d4d;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      background: var(--green);
+      opacity: .055;
+      filter: blur(130px);
+      border-radius: 50%;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .brand a {
+      color: white;
+      text-decoration: none;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .brand span {
+      color: var(--green);
+    }
+
+    .card {
+      background: rgba(13, 13, 13, .96);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.45);
+    }
+
+    .heading {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .heading h1 {
+      font-size: 28px;
+      margin-bottom: 9px;
+    }
+
+    .heading p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .github {
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: #171717;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      transition: .2s;
+    }
+
+    .github:hover {
+      background: #202020;
+      border-color: #444;
+      transform: translateY(-1px);
+    }
+
+    .github svg {
+      width: 21px;
+      height: 21px;
+      fill: white;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 25px 0;
+      color: #666;
+      font-size: 12px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      background: var(--border);
+      flex: 1;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      height: 50px;
+      padding: 0 15px;
+      border-radius: 10px;
+      border: 1px solid #292929;
+      background: #080808;
+      color: white;
+      outline: none;
+      font-size: 15px;
+      transition: .2s;
+    }
+
+    input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0,255,136,.07);
+    }
+
+    input::placeholder {
+      color: #555;
+    }
+
+    .password-wrap input {
+      padding-right: 55px;
+    }
+
+    .show-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      color: #777;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .show-password:hover {
+      color: var(--green);
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2px 0 20px;
+      font-size: 12px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #999;
+      cursor: pointer;
+    }
+
+    .remember input {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--green);
+    }
+
+    .forgot {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    .login-btn {
+      width: 100%;
+      height: 50px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--green);
+      color: #000;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .login-btn:hover {
+      background: #21ff99;
+      transform: translateY(-1px);
+    }
+
+    .login-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      padding: 12px;
+      border-radius: 9px;
+      margin-bottom: 17px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .message.error {
+      display: block;
+      color: #ff7777;
+      background: rgba(255, 50, 50, .08);
+      border: 1px solid rgba(255, 50, 50, .2);
+    }
+
+    .message.success {
+      display: block;
+      color: var(--green);
+      background: rgba(0,255,136,.07);
+      border: 1px solid rgba(0,255,136,.18);
+    }
+
+    .register {
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      margin-top: 25px;
+    }
+
+    .register a {
+      color: var(--green);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .register a:hover {
+      text-decoration: underline;
+    }
+
+    .security {
+      text-align: center;
+      color: #555;
+      font-size: 11px;
+      margin-top: 22px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 25px 20px;
+      }
+
+      .heading h1 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="brand">
+      <a href="index.html">MORDE<span>HOST</span></a>
+    </div>
+
+    <div class="card">
+
+      <div class="heading">
+        <h1>Welcome back</h1>
+        <p>Sign in to manage your bots and deployments.</p>
+      </div>
+
+      <div id="message" class="message"></div>
+
+      <!-- GitHub OAuth -->
+      <button type="button" class="github" id="githubBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.48.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.17 0 0 1-.32 3.3 1.23a11.4 11.4 0 0 1 6 0c2.29-1.55 3.29-1.23 3.29-1.23.66 1.65.25 2.87.13 3.17.76.84 1.22 1.91 1.22 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5"/>
+        </svg>
+        Continue with GitHub
+      </button>
+
+      <div class="divider">OR CONTINUE WITH EMAIL</div>
+
+      <form id="loginForm">
+
+        <div class="form-group">
+          <label for="email">Email address</label>
+
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+
+          <div class="input-wrap password-wrap">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+            <button
+              type="button"
+              class="show-password"
+              id="showPassword"
+            >
+              SHOW
+            </button>
+          </div>
+        </div>
+
+        <div class="form-options">
+
+          <label class="remember">
+            <input type="checkbox" id="remember">
+            Remember me
+          </label>
+
+          <a href="forgot-password.html" class="forgot">
+            Forgot password?
+          </a>
+
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">
+          Sign In
+        </button>
+
+      </form>
+
+      <div class="register">
+        Don't have an account?
+        <a href="register.html">Create account</a>
+      </div>
+
+    </div>
+
+    <div class="security">
+      🔒 Your connection is protected.
+    </div>
+
+  </div>
+
+  <script>
+    /*
+      Change this if your API is hosted somewhere else.
+
+      Example:
+      const API_URL = "https://your-domain.com/api";
+    */
+
+    const API_URL = "/api";
+
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const githubBtn = document.getElementById("githubBtn");
+    const message = document.getElementById("message");
+    const password = document.getElementById("password");
+    const showPassword = document.getElementById("showPassword");
+
+    function showMessage(text, type = "error") {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    function clearMessage() {
+      message.textContent = "";
+      message.className = "message";
+    }
+
+    /* Show / hide password */
+    showPassword.addEventListener("click", () => {
+      if (password.type === "password") {
+        password.type = "text";
+        showPassword.textContent = "HIDE";
+      } else {
+        password.type = "password";
+        showPassword.textContent = "SHOW";
+      }
+    });
+
+    /* Email login */
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      clearMessage();
+
+      const email = document.getElementById("email").value.trim();
+      const passwordValue = password.value;
+      const remember = document.getElementById("remember").checked;
+
+      if (!email || !passwordValue) {
+        showMessage("Please enter your email and password.");
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Signing in...";
+
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email,
+            password: passwordValue,
+            remember
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            data.message ||
+            data.error ||
+            "Invalid email or password."
+          );
+        }
+
+        /*
+          The backend can return either:
+          {
+            token: "JWT_TOKEN"
+          }
+
+          or:
+          {
+            accessToken: "JWT_TOKEN"
+          }
+        */
+
+        const token = data.token || data.accessToken;
+
+        if (token) {
+          if (remember) {
+            localStorage.setItem("mordehost_token", token);
+          } else {
+            sessionStorage.setItem("mordehost_token", token);
+          }
+        }
+
+        if (data.user) {
+          localStorage.setItem(
+            "mordehost_user",
+            JSON.stringify(data.user)
+          );
+        }
+
+        showMessage("Login successful. Redirecting...", "success");
+
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 700);
+
+      } catch (error) {
+        showMessage(error.message || "Unable to connect to the server.");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Sign In";
+      }
+    });
+
+    /*
+      GitHub OAuth
+
+      Backend route expected:
+
+      GET /auth/github
+
+      After GitHub authentication, your server should redirect
+      the user back to dashboard.html (or another callback page).
+    */
+
+    githubBtn.addEventListener("click", () => {
+      window.location.href = `${API_URL}/auth/github`;
+    });
+  </script>
+
+</body>
+</html>
