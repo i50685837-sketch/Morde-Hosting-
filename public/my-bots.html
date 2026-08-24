@@ -1446,4 +1446,393 @@ function renderBots(
     total - online;
 
 
-  docum
+  document.getElementById(
+    "totalBots"
+  ).textContent =
+    total;
+
+
+  document.getElementById(
+    "onlineBots"
+  ).textContent =
+    online;
+
+
+  document.getElementById(
+    "offlineBots"
+  ).textContent =
+    offline;
+
+
+  /* =====================================
+     NO BOTS
+  ====================================== */
+
+  if(total === 0){
+
+    container.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          ◆
+        </div>
+
+        <h3>
+          No bots yet
+        </h3>
+
+        <p>
+          Deploy your first bot to start hosting.
+        </p>
+
+        <a
+          href="deploy.html"
+          class="primary-btn">
+
+          Deploy Your First Bot
+
+        </a>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  /* =====================================
+     RENDER BOT CARDS
+  ====================================== */
+
+  container.innerHTML =
+    bots.map(
+      bot => {
+
+        const isOnline =
+          bot.status === "online" ||
+          bot.status === "running";
+
+
+        const isDeploying =
+          bot.status === "deploying" ||
+          bot.status === "building" ||
+          bot.status === "pending";
+
+
+        let statusClass =
+          "offline";
+
+
+        let statusText =
+          "OFFLINE";
+
+
+        if(isOnline){
+
+          statusClass =
+            "online";
+
+          statusText =
+            "ONLINE";
+
+        }else if(isDeploying){
+
+          statusClass =
+            "deploying";
+
+          statusText =
+            "DEPLOYING";
+
+        }
+
+
+        const botId =
+          bot._id ||
+          bot.id ||
+          "";
+
+
+        const botName =
+          bot.name ||
+          bot.botName ||
+          "Unnamed Bot";
+
+
+        const runtime =
+          bot.runtime ||
+          bot.language ||
+          "Node.js";
+
+
+        const phone =
+          bot.phone ||
+          bot.phoneNumber ||
+          "Not set";
+
+
+        const session =
+          bot.sessionId
+            ? "Configured"
+            : "Not configured";
+
+
+        let created =
+          "—";
+
+
+        if(bot.createdAt){
+
+          const date =
+            new Date(
+              bot.createdAt
+            );
+
+
+          if(!isNaN(date.getTime())){
+
+            created =
+              date.toLocaleDateString(
+                "en-KE",
+                {
+                  day:"2-digit",
+                  month:"short",
+                  year:"numeric"
+                }
+              );
+
+          }
+
+        }
+
+
+        return `
+
+          <article
+            class="bot-card"
+            data-id="${escapeHtml(
+              botId
+            )}">
+
+
+            <!-- BOT HEADER -->
+
+            <div class="bot-top">
+
+
+              <div class="bot-info">
+
+
+                <div class="bot-icon">
+                  ◆
+                </div>
+
+
+                <div>
+
+                  <div class="bot-name">
+
+                    ${escapeHtml(
+                      botName
+                    )}
+
+                  </div>
+
+
+                  <div class="bot-id">
+
+                    ID:
+                    ${escapeHtml(
+                      botId || "—"
+                    )}
+
+                  </div>
+
+                </div>
+
+
+              </div>
+
+
+              <!-- STATUS -->
+
+              <div
+                class="status ${statusClass}">
+
+                <span
+                  class="status-dot">
+                </span>
+
+                ${statusText}
+
+              </div>
+
+
+            </div>
+
+
+
+            <!-- BOT DETAILS -->
+
+            <div class="bot-details">
+
+
+              <div class="detail">
+
+                <div class="detail-label">
+                  Runtime
+                </div>
+
+                <div class="detail-value">
+
+                  ${escapeHtml(
+                    runtime
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <div class="detail">
+
+                <div class="detail-label">
+                  Created
+                </div>
+
+                <div class="detail-value">
+
+                  ${escapeHtml(
+                    created
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <div class="detail">
+
+                <div class="detail-label">
+                  Phone
+                </div>
+
+                <div class="detail-value">
+
+                  ${escapeHtml(
+                    phone
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <div class="detail">
+
+                <div class="detail-label">
+                  Session
+                </div>
+
+                <div class="detail-value">
+
+                  ${escapeHtml(
+                    session
+                  )}
+
+                </div>
+
+              </div>
+
+
+            </div>
+
+
+
+            <!-- ACTIONS -->
+
+            <div class="bot-actions">
+
+
+              <button
+                class="action-btn"
+                onclick="viewLogs(
+                  '${escapeAttr(botId)}'
+                )">
+
+                Logs
+
+              </button>
+
+
+              ${
+                isOnline
+
+                ?
+
+                `
+
+                  <button
+                    class="action-btn"
+                    onclick="restartBot(
+                      '${escapeAttr(botId)}'
+                    )">
+
+                    Restart
+
+                  </button>
+
+                `
+
+                :
+
+                `
+
+                  <button
+                    class="action-btn"
+                    ${
+                      isDeploying
+                        ? "disabled"
+                        : ""
+                    }
+                    onclick="startBot(
+                      '${escapeAttr(botId)}'
+                    )">
+
+                    ${
+                      isDeploying
+                        ? "Deploying..."
+                        : "Start"
+                    }
+
+                  </button>
+
+                `
+              }
+
+
+              <button
+                class="action-btn danger"
+                onclick="deleteBot(
+                  '${escapeAttr(botId)}'
+                )">
+
+                Delete
+
+              </button>
+
+
+            </div>
+
+
+          </article>
+
+        `;
+
+      }
+    ).join("");
+
+
+                      }
