@@ -1493,5 +1493,1339 @@ select:focus{
               <div class="info-icon">
                 1
               </div>
+                            <div>
+
+                <div class="info-title">
+                  Repository
+                </div>
+
+                <div class="info-text">
+                  Your GitHub repository should contain
+                  the complete bot project and its required
+                  files.
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <div class="info-icon">
+                2
+              </div>
+
+              <div>
+
+                <div class="info-title">
+                  Environment Variables
+                </div>
+
+                <div class="info-text">
+                  Add configuration values required by
+                  your bot. Keep sensitive credentials
+                  protected on the server.
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <div class="info-icon">
+                3
+              </div>
+
+              <div>
+
+                <div class="info-title">
+                  Session & Phone
+                </div>
+
+                <div class="info-text">
+                  Provide the session identifier and
+                  phone number required by your bot.
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <div class="info-icon">
+                4
+              </div>
+
+              <div>
+
+                <div class="info-title">
+                  Start Command
+                </div>
+
+                <div class="info-text">
+                  MordeHost uses your start command
+                  to launch the bot after deployment.
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <div class="info-icon">
+                5
+              </div>
+
+              <div>
+
+                <div class="info-title">
+                  Deploy
+                </div>
+
+                <div class="info-text">
+                  Click Deploy Bot and monitor the
+                  deployment from your dashboard.
+                </div>
+
+              </div>
+
+            </div>
+
+
+          </div>
+
+        </section>
+
+
+        <!-- =====================================
+             HOSTING CARD
+        ====================================== -->
+
+        <section class="card hosting">
+
+          <div class="card-title">
+            Hosting
+          </div>
+
+          <div class="card-description">
+            Your current MordeHost account information.
+          </div>
+
+
+          <div class="hosting-row">
+
+            <span class="hosting-label">
+              Wallet Balance
+            </span>
+
+            <span
+              class="hosting-value"
+              id="sideWallet">
+
+              KES 0.00
+
+            </span>
+
+          </div>
+
+
+          <div class="hosting-row">
+
+            <span class="hosting-label">
+              Plan
+            </span>
+
+            <span class="hosting-value">
+              Standard
+            </span>
+
+          </div>
+
+
+          <div class="hosting-row">
+
+            <span class="hosting-label">
+              Deployment
+            </span>
+
+            <span class="hosting-value">
+              Ready
+            </span>
+
+          </div>
+
+
+        </section>
+
+
+      </div>
+
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+<script>
+
+/* =========================================
+   API CONFIG
+========================================= */
+
+const API_BASE = "/api";
+
+
+/* =========================================
+   GET TOKEN
+========================================= */
+
+function getToken(){
+
+  return (
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    sessionStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    localStorage.getItem(
+      "token"
+    )
+  );
+
+}
+
+
+/* =========================================
+   API REQUEST
+========================================= */
+
+async function apiRequest(
+  endpoint,
+  options = {}
+){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+
+  const headers = {
+
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+
+  };
+
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+
+  const response =
+    await fetch(
+      API_BASE + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data = {};
+
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data = {};
+
+  }
+
+
+  if(
+    response.status === 401
+  ){
+
+    localStorage.removeItem(
+      "mordehost_token"
+    );
+
+    sessionStorage.removeItem(
+      "mordehost_token"
+    );
+
+    localStorage.removeItem(
+      "token"
+    );
+
+    window.location.replace(
+      "login.html"
+    );
+
+    throw new Error(
+      "Session expired."
+    );
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* =========================================
+   HTML ESCAPE
+========================================= */
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+
+  .replace(
+    /</g,
+    "&lt;"
+  )
+
+  .replace(
+    />/g,
+    "&gt;"
+  )
+
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================
+   ENVIRONMENT VARIABLES
+========================================= */
+
+const envList =
+  document.getElementById(
+    "envList"
+  );
+
+
+const addEnvBtn =
+  document.getElementById(
+    "addEnvBtn"
+  );
+
+
+function showEnvEmpty(){
+
+  if(
+    envList.children.length === 0
+  ){
+
+    envList.innerHTML = `
+
+      <div class="env-empty">
+
+        No environment variables added.
+        Click "Add Variable" to add one.
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+function addEnvironmentVariable(
+  key = "",
+  value = ""
+){
+
+  const empty =
+    envList.querySelector(
+      ".env-empty"
+    );
+
+
+  if(empty){
+
+    empty.remove();
+
+  }
+
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+
+  row.className =
+    "env-row";
+
+
+  row.innerHTML = `
+
+    <input
+      type="text"
+      class="env-key"
+      placeholder="VARIABLE_NAME"
+      maxlength="100"
+      autocomplete="off"
+      value="${escapeHtml(key)}">
+
+
+    <input
+      type="text"
+      class="env-value"
+      placeholder="Value"
+      maxlength="1000"
+      autocomplete="off"
+      value="${escapeHtml(value)}">
+
+
+    <button
+      type="button"
+      class="remove-env"
+      title="Remove variable">
+
+      ×
+
+    </button>
+
+  `;
+
+
+  row
+    .querySelector(
+      ".remove-env"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        row.remove();
+
+        showEnvEmpty();
+
+      }
+    );
+
+
+  envList.appendChild(
+    row
+  );
+
+}
+
+
+addEnvBtn.addEventListener(
+  "click",
+  () => {
+
+    addEnvironmentVariable();
+
+  }
+);
+
+
+/* =========================================
+   COLLECT ENV VARIABLES
+========================================= */
+
+function collectEnvironmentVariables(){
+
+  const rows =
+    envList.querySelectorAll(
+      ".env-row"
+    );
+
+
+  const variables = {};
+
+
+  rows.forEach(
+    row => {
+
+      const key =
+        row
+          .querySelector(
+            ".env-key"
+          )
+          .value
+          .trim();
+
+
+      const value =
+        row
+          .querySelector(
+            ".env-value"
+          )
+          .value;
+
+
+      if(key){
+
+        variables[key] =
+          value;
+
+      }
+
+    }
+  );
+
+
+  return variables;
+
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(
+  text,
+  type = "error"
+){
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  message.textContent =
+    text;
+
+
+  message.className =
+    `message show ${type}`;
+
+}
+
+
+/* =========================================
+   DEPLOYMENT STATUS
+========================================= */
+
+function setStepDone(
+  id
+){
+
+  const element =
+    document.getElementById(
+      id
+    );
+
+
+  if(!element){
+
+    return;
+
+  }
+
+
+  element.classList.add(
+    "done"
+  );
+
+
+  const check =
+    element.querySelector(
+      ".status-check"
+    );
+
+
+  if(check){
+
+    check.textContent =
+      "✓";
+
+  }
+
+}
+
+
+function updateDeploymentStatus(
+  step
+){
+
+  if(step >= 1){
+
+    setStepDone(
+      "stepOne"
+    );
+
+  }
+
+
+  if(step >= 2){
+
+    setStepDone(
+      "stepTwo"
+    );
+
+  }
+
+
+  if(step >= 3){
+
+    setStepDone(
+      "stepThree"
+    );
+
+  }
+
+
+  if(step >= 4){
+
+    setStepDone(
+      "stepFour"
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   DEPLOY FORM
+========================================= */
+
+document
+  .getElementById(
+    "deployForm"
+  )
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+
+      const button =
+        document.getElementById(
+          "deployBtn"
+        );
+
+
+      const botName =
+        document.getElementById(
+          "botName"
+        ).value.trim();
+
+
+      const sessionId =
+        document.getElementById(
+          "sessionId"
+        ).value.trim();
+
+
+      const phoneNumber =
+        document.getElementById(
+          "phoneNumber"
+        ).value.trim();
+
+
+      const repository =
+        document.getElementById(
+          "repository"
+        ).value.trim();
+
+
+      const branch =
+        document.getElementById(
+          "branch"
+        ).value.trim() ||
+        "main";
+
+
+      const startCommand =
+        document.getElementById(
+          "startCommand"
+        ).value.trim() ||
+        "npm start";
+
+
+      const environmentVariables =
+        collectEnvironmentVariables();
+
+
+      /* -------------------------
+         VALIDATION
+      ------------------------- */
+
+      if(
+        botName.length < 2
+      ){
+
+        showMessage(
+          "Enter a valid bot name."
+        );
+
+        return;
+
+      }
+
+
+      if(
+        sessionId.length < 3
+      ){
+
+        showMessage(
+          "Enter a valid session ID."
+        );
+
+        return;
+
+      }
+
+
+      if(
+        phoneNumber.length < 7
+      ){
+
+        showMessage(
+          "Enter a valid phone number."
+        );
+
+        return;
+
+      }
+
+
+      if(
+        !repository
+      ){
+
+        showMessage(
+          "Enter your GitHub repository URL."
+        );
+
+        return;
+
+      }
+
+
+      /* -------------------------
+         BUTTON
+      ------------------------- */
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Deploying...";
+
+
+      showMessage(
+        "Creating deployment...",
+        "success"
+      );
+
+
+      const status =
+        document.getElementById(
+          "deployStatus"
+        );
+
+
+      status.classList.add(
+        "show"
+      );
+
+
+      const dot =
+        document.getElementById(
+          "statusDot"
+        );
+
+
+      dot.className =
+        "status-dot loading";
+
+
+      document.getElementById(
+        "statusTitle"
+      ).textContent =
+        "Preparing deployment...";
+
+
+      try{
+
+        const data =
+          await apiRequest(
+            "/bots",
+            {
+
+              method:"POST",
+
+              body:JSON.stringify({
+
+                name:
+                  botName,
+
+                sessionId:
+                  sessionId,
+
+                phoneNumber:
+                  phoneNumber,
+
+                repository:
+                  repository,
+
+                branch:
+                  branch,
+
+                startCommand:
+                  startCommand,
+
+                environmentVariables:
+                  environmentVariables
+
+              })
+
+            }
+          );
+
+
+        updateDeploymentStatus(
+          1
+        );
+
+
+        document.getElementById(
+          "statusTitle"
+        ).textContent =
+          "Deployment created";
+
+
+        updateDeploymentStatus(
+          2
+        );
+
+
+        document.getElementById(
+          "statusTitle"
+        ).textContent =
+          "Installing dependencies";
+
+
+        setTimeout(
+          () => {
+
+            updateDeploymentStatus(
+              3
+            );
+
+            document.getElementById(
+              "statusTitle"
+            ).textContent =
+              "Starting bot";
+
+          },
+          700
+        );
+
+
+        setTimeout(
+          () => {
+
+            updateDeploymentStatus(
+              4
+            );
+
+
+            dot.className =
+              "status-dot success";
+
+
+            document.getElementById(
+              "statusTitle"
+            ).textContent =
+              "Deployment created successfully";
+
+
+            showMessage(
+              data.message ||
+              "Your bot has been deployed successfully.",
+              "success"
+            );
+
+
+            button.textContent =
+              "Deployment Created";
+
+
+            setTimeout(
+              () => {
+
+                window.location.href =
+                  "dashboard.html";
+
+              },
+              1200
+            );
+
+
+          },
+          1500
+        );
+
+
+      }catch(error){
+
+        console.error(
+          "Deployment error:",
+          error
+        );
+
+
+        dot.className =
+          "status-dot error";
+
+
+        document.getElementById(
+          "statusTitle"
+        ).textContent =
+          "Deployment failed";
+
+
+        showMessage(
+          error.message ||
+          "Unable to deploy bot."
+        );
+
+
+        button.disabled =
+          false;
+
+
+        button.textContent =
+          "Deploy Bot";
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   LOAD USER
+========================================= */
+
+async function loadUser(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+
+    const user =
+      data.user ||
+      data;
+
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+
+    const email =
+      user.email ||
+      "Account";
+
+
+    document.getElementById(
+      "sidebarName"
+    ).textContent =
+      name;
+
+
+    document.getElementById(
+      "sidebarEmail"
+    ).textContent =
+      email;
+
+
+    document.getElementById(
+      "sidebarAvatar"
+    ).textContent =
+      name
+        .charAt(0)
+        .toUpperCase();
+
+
+    updateWallet(
+      Number(
+        user.walletBalance ||
+        0
+      )
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "User API unavailable:",
+      error.message
+    );
+
+    loadStoredUser();
+
+  }
+
+}
+
+
+/* =========================================
+   STORED USER
+========================================= */
+
+function loadStoredUser(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        "mordehost_user"
+      ) ||
+
+      localStorage.getItem(
+        "mordehostUser"
+      );
+
+
+    if(!raw){
+
+      return;
+
+    }
+
+
+    const user =
+      JSON.parse(
+        raw
+      );
+
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+
+    document.getElementById(
+      "sidebarName"
+    ).textContent =
+      name;
+
+
+    document.getElementById(
+      "sidebarEmail"
+    ).textContent =
+      user.email ||
+      "Account";
+
+
+    document.getElementById(
+      "sidebarAvatar"
+    ).textContent =
+      name
+        .charAt(0)
+        .toUpperCase();
+
+
+    updateWallet(
+      Number(
+        user.walletBalance ||
+        0
+      )
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "Stored user error:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   WALLET
+========================================= */
+
+function updateWallet(
+  amount
+){
+
+  const money =
+    `KES ${Number(
+      amount || 0
+    ).toLocaleString(
+      "en-KE",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )}`;
+
+
+  document.getElementById(
+    "topWallet"
+  ).textContent =
+    money;
+
+
+  document.getElementById(
+    "sideWallet"
+  ).textContent =
+    money;
+
+}
+
+
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+const sidebar =
+  document.getElementById(
+    "sidebar"
+  );
+
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+const menuBtn =
+  document.getElementById(
+    "menuBtn"
+  );
+
+
+function openMenu(){
+
+  sidebar.classList.add(
+    "open"
+  );
+
+  overlay.classList.add(
+    "show"
+  );
+
+}
+
+
+function closeMenu(){
+
+  sidebar.classList.remove(
+    "open"
+  );
+
+  overlay.classList.remove(
+    "show"
+  );
+
+}
+
+
+menuBtn.addEventListener(
+  "click",
+  openMenu
+);
+
+
+overlay.addEventListener(
+  "click",
+  closeMenu
+);
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      if(
+        !confirm(
+          "Are you sure you want to log out?"
+        )
+      ){
+
+        return;
+
+      }
+
+
+      localStorage.removeItem(
+        "mordehost_token"
+      );
+
+
+      sessionStorage.removeItem(
+        "mordehost_token"
+      );
+
+
+      localStorage.removeItem(
+        "token"
+      );
+
+
+      localStorage.removeItem(
+        "mordehost_user"
+      );
+
+
+      localStorage.removeItem(
+        "mordehostUser"
+      );
+
+
+      window.location.replace(
+        "login.html"
+      );
+
+    }
+  );
+
+
+/* =========================================
+   THEME
+========================================= */
+
+document
+  .getElementById(
+    "themeBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      window.location.href =
+        "settings.html#theme";
+
+    }
+  );
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+async function init(){
+
+  if(
+    !getToken()
+  ){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+
+  loadStoredUser();
+
+
+  await loadUser();
+
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
+
+</script>
+
+</body>
+</html>
 
           
