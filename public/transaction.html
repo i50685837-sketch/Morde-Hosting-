@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>MordeHost · Transactions</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#080808;
+  --muted:#777;
+  --border:#e5e5e5;
+  --soft:#f0f1f3;
+  --green:#168345;
+  --red:#b42318;
+}
+
+html.dark{
+  --bg:#090909;
+  --card:#111;
+  --text:#fff;
+  --muted:#999;
+  --border:#292929;
+  --soft:#181818;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:265px;
+  background:#050505;
+  color:#fff;
+  padding:20px 14px;
+  overflow-y:auto;
+  z-index:100;
+  transition:.25s;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 10px 22px;
+  font-size:21px;
+  font-weight:950;
+}
+
+.logo-box{
+  width:39px;
+  height:39px;
+  border-radius:11px;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
+
+.sidebar-user{
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:14px 12px;
+  margin-bottom:17px;
+}
+
+.sidebar-avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  margin-bottom:9px;
+}
+
+.sidebar-name{
+  font-size:14px;
+  font-weight:900;
+}
+
+.sidebar-email{
+  color:#858585;
+  font-size:12px;
+  margin-top:4px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-title{
+  color:#666;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:13px 12px 6px;
+}
+
+.nav a,
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#a7a7a7;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  text-align:left;
+}
+
+.nav a:hover,
+.nav a.active,
+.nav button:hover{
+  background:#fff;
+  color:#000;
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  font-weight:900;
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main{
+  margin-left:265px;
+  min-height:100vh;
+}
+
+.topbar{
+  height:72px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.menu-btn{
+  display:none;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  font-size:25px;
+  cursor:pointer;
+}
+
+.page-title{
+  font-size:14px;
+  font-weight:900;
+}
+
+.wallet-mini{
+  background:#000;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:900;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.content{
+  max-width:1100px;
+  margin:auto;
+  padding:30px;
+}
+
+.heading{
+  margin-bottom:22px;
+}
+
+.heading h1{
+  font-size:30px;
+  font-weight:950;
+}
+
+.heading p{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:7px;
+}
+
+
+/* =========================================
+   SUMMARY
+========================================= */
+
+.summary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.summary-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+}
+
+.summary-label{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+}
+
+.summary-value{
+  margin-top:7px;
+  font-size:23px;
+  font-weight:950;
+}
+
+
+/* =========================================
+   TRANSACTIONS CARD
+========================================= */
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:17px;
+  overflow:hidden;
+}
+
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:20px;
+  border-bottom:1px solid var(--border);
+}
+
+.card-title{
+  font-size:15px;
+  font-weight:950;
+}
+
+.refresh-btn{
+  border:1px solid var(--border);
+  background:var(--soft);
+  color:var(--text);
+  border-radius:9px;
+  padding:9px 13px;
+  font-size:10px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:750px;
+}
+
+th{
+  text-align:left;
+  padding:13px 18px;
+  background:var(--soft);
+  color:var(--muted);
+  font-size:9px;
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+td{
+  padding:17px 18px;
+  border-top:1px solid var(--border);
+  font-size:11px;
+  font-weight:700;
+}
+
+.reference{
+  font-family:monospace;
+  font-size:10px;
+}
+
+.amount{
+  font-weight:950;
+}
+
+.amount.credit{
+  color:var(--green);
+}
+
+.amount.debit{
+  color:var(--red);
+}
+
+.type{
+  display:inline-flex;
+  padding:6px 9px;
+  border-radius:20px;
+  background:var(--soft);
+  font-size:9px;
+  font-weight:900;
+}
+
+.type.deposit{
+  color:var(--green);
+}
+
+.type.withdrawal{
+  color:var(--red);
+}
+
+.type.charge{
+  color:#8a6200;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 9px;
+  border-radius:20px;
+  font-size:9px;
+  font-weight:950;
+}
+
+.status-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+}
+
+.status.success{
+  background:#e9f8ef;
+  color:#168345;
+}
+
+.status.success .status-dot{
+  background:#168345;
+}
+
+.status.pending{
+  background:#fff4dc;
+  color:#946800;
+}
+
+.status.pending .status-dot{
+  background:#946800;
+}
+
+.status.failed{
+  background:#ffecec;
+  color:#b42318;
+}
+
+.status.failed .status-dot{
+  background:#b42318;
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.empty{
+  padding:55px 20px;
+  text-align:center;
+}
+
+.empty-icon{
+  width:58px;
+  height:58px;
+  border-radius:15px;
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 16px;
+  font-size:22px;
+  font-weight:950;
+}
+
+.empty h3{
+  font-size:16px;
+  font-weight:950;
+}
+
+.empty p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:7px;
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.loading{
+  padding:50px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#000;
+  color:#fff;
+  padding:13px 16px;
+  border-radius:10px;
+  font-size:11px;
+  font-weight:800;
+  opacity:0;
+  transform:translateY(10px);
+  pointer-events:none;
+  transition:.25s;
+  z-index:300;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:90;
+}
+
+@media(max-width:900px){
+
+  .sidebar{
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .overlay.show{
+    display:block;
+  }
+
+}
+
+@media(max-width:650px){
+
+  .content{
+    padding:20px 14px;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .page-title{
+    display:none;
+  }
+
+  .heading h1{
+    font-size:25px;
+  }
+
+  .summary{
+    grid-template-columns:1fr;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="logo">
+
+    <div class="logo-box">M</div>
+
+    MordeHost
+
+  </div>
+
+
+  <div class="sidebar-user">
+
+    <div
+      class="sidebar-avatar"
+      id="sidebarAvatar">
+      U
+    </div>
+
+    <div
+      class="sidebar-name"
+      id="sidebarName">
+      User
+    </div>
+
+    <div
+      class="sidebar-email"
+      id="sidebarEmail">
+      user@example.com
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <div class="nav-title">
+      Main
+    </div>
+
+    <a href="dashboard.html">
+      <span class="nav-icon">◆</span>
+      Dashboard
+    </a>
+
+    <a href="deploy.html">
+      <span class="nav-icon">+</span>
+      Deploy Bot
+    </a>
+
+    <a href="my-bots.html">
+      <span class="nav-icon">◈</span>
+      My Bots
+    </a>
+
+    <a href="logs.html">
+      <span class="nav-icon">≡</span>
+      Logs
+    </a>
+
+
+    <div class="nav-title">
+      Wallet
+    </div>
+
+    <a href="wallet.html">
+      <span class="nav-icon">$</span>
+      Wallet
+    </a>
+
+    <a
+      href="transactions.html"
+      class="active">
+
+      <span class="nav-icon">↕</span>
+      Transactions
+
+    </a>
+
+
+    <div class="nav-title">
+      Account
+    </div>
+
+    <a href="profile.html">
+      <span class="nav-icon">○</span>
+      Profile
+    </a>
+
+    <a href="settings.html">
+      <span class="nav-icon">⚙</span>
+      Settings
+    </a>
+
+    <button id="themeBtn">
+      <span class="nav-icon">◐</span>
+      Theme
+    </button>
+
+
+    <div class="nav-title">
+      Help
+    </div>
+
+    <a href="support.html">
+      <span class="nav-icon">?</span>
+      Support
+    </a>
+
+    <a href="about.html">
+      <span class="nav-icon">i</span>
+      About
+    </a>
+
+    <a href="terms.html">
+      <span class="nav-icon">§</span>
+      Terms
+    </a>
+
+    <button id="logoutBtn">
+      <span class="nav-icon">↪</span>
+      Log Out
+    </button>
+
+  </nav>
+
+</aside>
+
+
+<div class="overlay" id="overlay"></div>
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<div class="main">
+
+<header class="topbar">
+
+  <div style="
+    display:flex;
+    align-items:center;
+    gap:14px;
+  ">
+
+    <button
+      class="menu-btn"
+      id="menuBtn">
+      ☰
+    </button>
+
+    <div class="page-title">
+      Transactions
+    </div>
+
+  </div>
+
+
+  <a
+    href="wallet.html"
+    class="wallet-mini">
+
+    Wallet ·
+    <span id="topWallet">
+      KES 0.00
+    </span>
+
+  </a>
+
+</header>
+
+
+<main class="content">
+
+
+  <div class="heading">
+
+    <h1>
+      Transactions
+    </h1>
+
+    <p>
+      View your wallet deposits, charges and other transactions.
+    </p>
+
+  </div>
+
+
+  <!-- =====================================
+       SUMMARY
+  ====================================== -->
+
+  <div class="summary">
+
+    <div class="summary-card">
+
+      <div class="summary-label">
+        Current Balance
+      </div>
+
+      <div
+        class="summary-value"
+        id="balance">
+        KES 0.00
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-label">
+        Total Deposits
+      </div>
+
+      <div
+        class="summary-value"
+        id="totalDeposits">
+        KES 0.00
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-label">
+        Total Charges
+      </div>
+
+      <div
+        class="summary-value"
+        id="totalCharges">
+        KES 0.00
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================
+       TRANSACTIONS
+  ====================================== -->
+
+  <section class="card">
+
+    <div class="card-header">
+
+      <div class="card-title">
+        Transaction History
+      </div>
+
+      <button
+        class="refresh-btn"
+        onclick="loadTransactions()">
+
+        Refresh
+
+      </button>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Reference
+            </th>
+
+            <th>
+              Type
+            </th>
+
+            <th>
+              Amount
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Description
+            </th>
+
+            <th>
+              Date
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="transactionsBody">
+
+          <tr>
+
+            <td
+              colspan="6"
+              class="loading">
+
+              Loading transactions...
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+</main>
+
+</div>
+
+
+<div
+  class="toast"
+  id="toast">
+</div>
+
+
+<script>
+
+/* =========================================
+   AUTH
+========================================= */
+
+function getToken(){
+
+  return (
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+    sessionStorage.getItem(
+      "mordehost_token"
+    ) ||
+    localStorage.getItem(
+      "token"
+    )
+  );
+
+}
+
+
+function logout(){
+
+  localStorage.removeItem(
+    "mordehost_token"
+  );
+
+  sessionStorage.removeItem(
+    "mordehost_token"
+  );
+
+  localStorage.removeItem(
+    "token"
+  );
+
+  localStorage.removeItem(
+    "mordehost_user"
+  );
+
+  localStorage.removeItem(
+    "mordehostUser"
+  );
+
+  window.location.replace(
+    "login.html"
+  );
+
+}
+
+
+/* =========================================
+   API
+========================================= */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    logout();
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+
+  const headers = {
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+  };
+
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+
+  const response =
+    await fetch(
+      "/api" + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data={};
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data={};
+
+  }
+
+
+  if(response.status === 401){
+
+    logout();
+
+    throw new Error(
+      "Session expired."
+    );
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* =========================================
+   FORMAT MONEY
+========================================= */
+
+function money(
+  amount
+){
+
+  return `KES ${Number(
+    amount || 0
+  ).toLocaleString(
+    "en-KE",
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  )}`;
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================
+   USER
+========================================= */
+
+async function loadUser(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+
+    const user =
+      data.user ||
+      data;
+
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+
+    document.getElementById(
+      "sidebarName"
+    ).textContent =
+      name;
+
+
+    document.getElementById(
+      "sidebarEmail"
+    ).textContent =
+      user.email ||
+      "Account";
+
+
+    document.getElementById(
+      "sidebarAvatar"
+    ).textContent =
+      name
+        .charAt(0)
+        .toUpperCase();
+
+
+    const balance =
+      Number(
+        user.walletBalance ||
+        user.balance ||
+        0
+      );
+
+
+    document.getElementById(
+      "topWallet"
+    ).textContent =
+      money(balance);
+
+
+    document.getElementById(
+      "balance"
+    ).textContent =
+      money(balance);
+
+
+  }catch(error){
+
+    console.log(
+      "User:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   TRANSACTION STATUS
+========================================= */
+
+function getStatus(
+  transaction
+){
+
+  const value =
+    String(
+      transaction.status ||
+      "pending"
+    ).toLowerCase();
+
+
+  if(
+    value === "success" ||
+    value === "successful" ||
+    value === "completed" ||
+    value === "paid"
+  ){
+
+    return {
+      className:"success",
+      text:"SUCCESS"
+    };
+
+  }
+
+
+  if(
+    value === "failed" ||
+    value === "cancelled" ||
+    value === "canceled"
+  ){
+
+    return {
+      className:"failed",
+      text:"FAILED"
+    };
+
+  }
+
+
+  return {
+    className:"pending",
+    text:"PENDING"
+  };
+
+}
+
+
+/* =========================================
+   TRANSACTION TYPE
+========================================= */
+
+function getType(
+  transaction
+){
+
+  const value =
+    String(
+      transaction.type ||
+      transaction.transactionType ||
+      "transaction"
+    ).toLowerCase();
+
+
+  if(
+    value.includes("deposit") ||
+    value.includes("payment") ||
+    value.includes("credit")
+  ){
+
+    return {
+      className:"deposit",
+      text:"DEPOSIT"
+    };
+
+  }
+
+
+  if(
+    value.includes("withdraw")
+  ){
+
+    return {
+      className:"withdrawal",
+      text:"WITHDRAWAL"
+    };
+
+  }
+
+
+  if(
+    value.includes("charge") ||
+    value.includes("hosting") ||
+    value.includes("debit")
+  ){
+
+    return {
+      className:"charge",
+      text:"CHARGE"
+    };
+
+  }
+
+
+  return {
+    className:"",
+    text:value.toUpperCase()
+  };
+
+}
+
+
+/* =========================================
+   LOAD TRANSACTIONS
+========================================= */
+
+async function loadTransactions(){
+
+  const body =
+    document.getElementById(
+      "transactionsBody"
+    );
+
+
+  body.innerHTML = `
+
+    <tr>
+
+      <td
+        colspan="6"
+        class="loading">
+
+        Loading transactions...
+
+      </td>
+
+    </tr>
+
+  `;
+
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/transactions"
+      );
+
+
+    const transactions =
+      Array.isArray(data)
+        ? data
+        : (
+            data.transactions ||
+            []
+          );
+
+
+    renderTransactions(
+      transactions
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Transactions:",
+      error
+    );
+
+
+    body.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="6"
+          class="loading">
+
+          Unable to load transactions.
+
+          <br><br>
+
+          <button
+            class="refresh-btn"
+            onclick="loadTransactions()">
+
+            Try Again
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================
+   RENDER TRANSACTIONS
+========================================= */
+
+function renderTransactions(
+  transactions
+){
+
+  const body =
+    document.getElementById(
+      "transactionsBody"
+    );
+
+
+  let deposits = 0;
+  let charges = 0;
+
+
+  transactions.forEach(
+    transaction => {
+
+      const status =
+        String(
+          transaction.status ||
+          ""
+        ).toLowerCase();
+
+
+      if(
+        status === "success" ||
+        status === "successful" ||
+        status === "completed"
+      ){
+
+        const type =
+          String(
+            transaction.type ||
+            ""
+          ).toLowerCase();
+
+
+        const amount =
+          Number(
+            transaction.amount ||
+            0
+          );
+
+
+        if(
+          type.includes("deposit") ||
+          type.includes("payment") ||
+          type.includes("credit")
+        ){
+
+          deposits += amount;
+
+        }
+
+
+        if(
+          type.includes("charge") ||
+          type.includes("hosting") ||
+          type.includes("debit")
+        ){
+
+          charges += amount;
+
+        }
+
+      }
+
+    }
+  );
+
+
+  document.getElementById(
+    "totalDeposits"
+  ).textContent =
+    money(deposits);
+
+
+  document.getElementById(
+    "totalCharges"
+  ).textContent =
+    money(charges);
+
+
+  if(!transactions.length){
+
+    body.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="6">
+
+          <div class="empty">
+
+            <div class="empty-icon">
+              ↕
+            </div>
+
+            <h3>
+              No transactions yet
+            </h3>
+
+            <p>
+              Your
