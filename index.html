@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050505">
+  <title>MordeHost — Bot Hosting</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #050505;
+      --card: #0d0d0d;
+      --card2: #111111;
+      --text: #ffffff;
+      --muted: #929292;
+      --line: #202020;
+      --accent: #00ff88;
+      --accent2: #00c86a;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* NAVBAR */
+    nav {
+      width: 100%;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      border-bottom: 1px solid var(--line);
+      background: rgba(5, 5, 5, .92);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(15px);
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: #bdbdbd;
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 11px 18px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-login {
+      background: transparent;
+      color: white;
+    }
+
+    .btn-register {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 680px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 90px 20px;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: var(--accent);
+      opacity: .08;
+      filter: blur(130px);
+      border-radius: 50%;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid #1f4737;
+      border-radius: 50px;
+      background: #09130e;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(45px, 8vw, 86px);
+      line-height: .98;
+      letter-spacing: -4px;
+      font-weight: 900;
+      margin-bottom: 25px;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 35px;
+      flex-wrap: wrap;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #000;
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-weight: 800;
+      border: 1px solid var(--accent);
+    }
+
+    .secondary {
+      background: #0d0d0d;
+      border: 1px solid #292929;
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-weight: 800;
+    }
+
+    /* TERMINAL */
+    .terminal {
+      width: min(850px, 94%);
+      margin: 20px auto 0;
+      background: #080808;
+      border: 1px solid #242424;
+      border-radius: 15px;
+      text-align: left;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    }
+
+    .terminal-top {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 15px;
+      border-bottom: 1px solid #1c1c1c;
+    }
+
+    .circle {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #333;
+    }
+
+    .terminal-body {
+      padding: 22px;
+      color: #aaa;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .green {
+      color: var(--accent);
+    }
+
+    /* FEATURES */
+    section {
+      padding: 90px 6%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+    }
+
+    .features {
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .feature {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 28px;
+      transition: .25s;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      border-color: #315c47;
+    }
+
+    .icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 11px;
+      background: #0b1b13;
+      border: 1px solid #193c2b;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-weight: 900;
+      margin-bottom: 20px;
+    }
+
+    .feature h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    /* STATS */
+    .stats {
+      max-width: 1000px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      overflow: hidden;
+      background: var(--card);
+    }
+
+    .stat {
+      text-align: center;
+      padding: 30px 15px;
+      border-right: 1px solid var(--line);
+    }
+
+    .stat:last-child {
+      border-right: 0;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 7px;
+      color: var(--accent);
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* CTA */
+    .cta {
+      max-width: 1050px;
+      margin: auto;
+      padding: 60px 30px;
+      text-align: center;
+      background: linear-gradient(145deg, #0c160f, #090909);
+      border: 1px solid #1d3828;
+      border-radius: 20px;
+    }
+
+    .cta h2 {
+      font-size: 38px;
+      margin-bottom: 15px;
+    }
+
+    .cta p {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 30px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #666;
+      font-size: 13px;
+    }
+
+    footer span {
+      color: var(--accent);
+    }
+
+    /* MOBILE */
+    @media (max-width: 800px) {
+      nav {
+        padding: 0 5%;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat:nth-child(2) {
+        border-right: 0;
+      }
+
+      .stat:nth-child(-n+2) {
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+
+      .hero {
+        min-height: 600px;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-buttons .btn-login {
+        display: none;
+      }
+
+      .logo {
+        font-size: 20px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .section-title h2,
+      .cta h2 {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="logo">MORDE<span>HOST</span></a>
+
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#status">Status</a>
+      <a href="#about">About</a>
+    </div>
+
+    <div class="nav-buttons">
+      <a href="login.html" class="btn btn-login">Login</a>
+      <a href="register.html" class="btn btn-register">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <main class="hero">
+
+    <div class="glow"></div>
+
+    <div class="hero-content">
+
+      <div class="badge">
+        <span class="dot"></span>
+        BOT HOSTING PLATFORM
+      </div>
+
+      <h1>
+        Host Your Bots.<br>
+        <span>Keep Them Online.</span>
+      </h1>
+
+      <p>
+        Deploy, manage and monitor your bots from one simple dashboard.
+        Built for developers who want reliable hosting without unnecessary complexity.
+      </p>
+
+      <div class="hero-actions">
+        <a href="register.html" class="primary">Start Hosting →</a>
+        <a href="login.html" class="secondary">Login to Dashboard</a>
+      </div>
+
+      <div class="terminal">
+
+        <div class="terminal-top">
+          <span class="circle"></span>
+          <span class="circle"></span>
+          <span class="circle"></span>
+        </div>
+
+        <div class="terminal-body">
+          <div>$ <span class="green">mordehost deploy my-bot</span></div>
+          <div>→ Uploading bot files...</div>
+          <div>→ Installing dependencies...</div>
+          <div>→ Starting process...</div>
+          <div>→ <span class="green">Bot is now online ✓</span></div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FEATURES -->
+  <section id="features">
+
+    <div class="section-title">
+      <h2>Everything You Need</h2>
+      <p>Manage your bots from one powerful control panel.</p>
+    </div>
+
+    <div class="features">
+
+      <div class="feature">
+        <div class="icon">01</div>
+        <h3>Easy Deployment</h3>
+        <p>
+          Upload your bot project and get it running without complicated server configuration.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">02</div>
+        <h3>Process Control</h3>
+        <p>
+          Start, stop and restart your bot processes directly from your dashboard.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">03</div>
+        <h3>Live Logs</h3>
+        <p>
+          Monitor your bot output and quickly identify errors when something goes wrong.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">04</div>
+        <h3>Environment Variables</h3>
+        <p>
+          Keep API keys and configuration values separate from your source code.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">05</div>
+        <h3>Bot Management</h3>
+        <p>
+          Organize multiple projects and view their current status from one place.
+        </p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">06</div>
+        <h3>Developer Friendly</h3>
+        <p>
+          Designed around Node.js applications and common bot-development workflows.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <section id="status">
+
+    <div class="section-title">
+      <h2>Platform Overview</h2>
+      <p>A simple infrastructure built around your bots.</p>
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong>24/7</strong>
+        <span>Monitoring</span>
+      </div>
+
+      <div class="stat">
+        <strong>Node</strong>
+        <span>Runtime Support</span>
+      </div>
+
+      <div class="stat">
+        <strong>API</strong>
+        <span>Management</span>
+      </div>
+
+      <div class="stat">
+        <strong>∞</strong>
+        <span>Bot Projects</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+
+    <div class="cta">
+
+      <h2>Ready to host your bot?</h2>
+
+      <p>
+        Create your account and start managing your projects from your own dashboard.
+      </p>
+
+      <a href="register.html" class="primary">
+        Create Free Account →
+      </a>
+
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>© 2026 <span>MordeHost</span>. All rights reserved.</div>
+    <div>Built for developers.</div>
+  </footer>
+
+</body>
+</html>
