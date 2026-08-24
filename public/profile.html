@@ -1464,4 +1464,426 @@ document
   .getElementById(
     "profileForm"
   )
-  .addEventListene
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+
+      const button =
+        document.getElementById(
+          "saveBtn"
+        );
+
+
+      const name =
+        document.getElementById(
+          "name"
+        ).value.trim();
+
+
+      if(name.length < 2){
+
+        showMessage(
+          "Please enter a valid name.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Saving...";
+
+
+      try{
+
+        const data =
+          await apiRequest(
+            "/user/profile",
+            {
+
+              method:"PUT",
+
+              body:JSON.stringify({
+
+                name:name
+
+              })
+
+            }
+          );
+
+
+        const user =
+          data.user ||
+          data;
+
+
+        renderUser(
+          user
+        );
+
+
+        /*
+          Keep local profile data
+          synchronized with the
+          backend response.
+        */
+
+        try{
+
+          localStorage.setItem(
+            "mordehost_user",
+            JSON.stringify(
+              user
+            )
+          );
+
+        }catch(error){
+
+          console.log(
+            "Local storage error:",
+            error.message
+          );
+
+        }
+
+
+        showMessage(
+          data.message ||
+          "Profile updated successfully.",
+          "success"
+        );
+
+
+      }catch(error){
+
+        console.error(
+          "Profile update:",
+          error
+        );
+
+
+        showMessage(
+          error.message ||
+          "Unable to update profile.",
+          "error"
+        );
+
+      }finally{
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Save Changes";
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(
+  text,
+  type = "error"
+){
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  message.textContent =
+    text;
+
+
+  message.className =
+    `message show ${type}`;
+
+
+  setTimeout(
+    function(){
+
+      message.className =
+        "message";
+
+    },
+    4000
+  );
+
+}
+
+
+/* =========================================
+   CHANGE PASSWORD
+========================================= */
+
+document
+  .getElementById(
+    "passwordBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      window.location.href =
+        "settings.html#password";
+
+    }
+  );
+
+
+/* =========================================
+   CLEAR SESSION
+========================================= */
+
+function clearSession(){
+
+  localStorage.removeItem(
+    "mordehost_token"
+  );
+
+  sessionStorage.removeItem(
+    "mordehost_token"
+  );
+
+  localStorage.removeItem(
+    "token"
+  );
+
+  localStorage.removeItem(
+    "mordehost_user"
+  );
+
+  localStorage.removeItem(
+    "mordehostUser"
+  );
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+function logout(){
+
+  if(
+    !confirm(
+      "Are you sure you want to log out?"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  clearSession();
+
+
+  window.location.replace(
+    "login.html"
+  );
+
+}
+
+
+/* =========================================
+   SIDEBAR LOGOUT
+========================================= */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    logout
+  );
+
+
+/* =========================================
+   SECURITY LOGOUT
+========================================= */
+
+document
+  .getElementById(
+    "securityLogout"
+  )
+  .addEventListener(
+    "click",
+    logout
+  );
+
+
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+const sidebar =
+  document.getElementById(
+    "sidebar"
+  );
+
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+const menuBtn =
+  document.getElementById(
+    "menuBtn"
+  );
+
+
+function openMenu(){
+
+  sidebar.classList.add(
+    "open"
+  );
+
+  overlay.classList.add(
+    "show"
+  );
+
+}
+
+
+function closeMenu(){
+
+  sidebar.classList.remove(
+    "open"
+  );
+
+  overlay.classList.remove(
+    "show"
+  );
+
+}
+
+
+menuBtn.addEventListener(
+  "click",
+  openMenu
+);
+
+
+overlay.addEventListener(
+  "click",
+  closeMenu
+);
+
+
+/* =========================================
+   CLOSE MENU AFTER NAVIGATION
+========================================= */
+
+document
+  .querySelectorAll(
+    ".nav a"
+  )
+  .forEach(
+    link => {
+
+      link.addEventListener(
+        "click",
+        closeMenu
+      );
+
+    }
+  );
+
+
+/* =========================================
+   THEME
+========================================= */
+
+document
+  .getElementById(
+    "themeBtn"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      window.location.href =
+        "settings.html#theme";
+
+    }
+  );
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+async function init(){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+
+  /*
+    Load cached data first so
+    the page appears immediately.
+  */
+
+  loadStoredUser();
+
+
+  /*
+    Then request fresh data
+    from the backend.
+  */
+
+  await Promise.all([
+
+    loadProfile(),
+
+    loadBotCount()
+
+  ]);
+
+}
+
+
+/* =========================================
+   DOM READY
+========================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
+
+</script>
+
+</body>
+</html>
