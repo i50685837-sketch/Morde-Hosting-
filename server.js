@@ -12,7 +12,6 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
 require('dotenv').config();
-const express = require('express');
 const crypto = require('crypto');
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
