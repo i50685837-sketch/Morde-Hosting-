@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MordeHost · Dashboard</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#0a0a0a;
+  --muted:#737373;
+  --border:#e7e7e7;
+  --black:#050505;
+  --green:#16a34a;
+  --red:#dc2626;
+  --yellow:#ca8a04;
+}
+
+body{
+  font-family:Inter,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:265px;
+
+  background:#050505;
+  color:#fff;
+
+  padding:20px 14px;
+
+  z-index:100;
+
+  transform:translateX(0);
+  transition:.25s ease;
+
+  overflow-y:auto;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:5px 10px 22px;
+
+  font-size:21px;
+  font-weight:900;
+}
+
+.logo-box{
+  width:39px;
+  height:39px;
+
+  background:#fff;
+  color:#000;
+
+  border-radius:11px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:900;
+}
+
+/* USER */
+
+.sidebar-user{
+  border:1px solid #292929;
+  border-radius:14px;
+  padding:14px 12px;
+  margin-bottom:17px;
+}
+
+.sidebar-avatar{
+  width:43px;
+  height:43px;
+
+  background:#fff;
+  color:#000;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:900;
+
+  margin-bottom:9px;
+}
+
+.sidebar-name{
+  font-size:14px;
+  font-weight:900;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.sidebar-email{
+  color:#858585;
+  font-size:12px;
+
+  margin-top:4px;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* NAV */
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-title{
+  color:#666;
+
+  font-size:10px;
+  font-weight:900;
+
+  letter-spacing:1px;
+
+  text-transform:uppercase;
+
+  padding:13px 12px 6px;
+}
+
+.nav a,
+.nav button{
+  display:flex;
+  align-items:center;
+
+  width:100%;
+
+  gap:12px;
+
+  padding:12px;
+
+  border:0;
+  border-radius:10px;
+
+  background:transparent;
+
+  color:#a7a7a7;
+
+  text-decoration:none;
+
+  font-size:14px;
+  font-weight:800;
+
+  cursor:pointer;
+
+  text-align:left;
+
+  transition:.15s;
+}
+
+.nav a:hover,
+.nav a.active,
+.nav button:hover{
+  background:#fff;
+  color:#000;
+}
+
+.nav-icon{
+  width:21px;
+
+  text-align:center;
+
+  font-weight:900;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+  margin-left:265px;
+  min-height:100vh;
+}
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar{
+  height:72px;
+
+  background:#fff;
+
+  border-bottom:1px solid var(--border);
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 28px;
+
+  position:sticky;
+  top:0;
+
+  z-index:50;
+}
+
+.menu-btn{
+  display:none;
+
+  border:0;
+  background:transparent;
+
+  font-size:25px;
+
+  cursor:pointer;
+}
+
+.page-title{
+  font-size:14px;
+  font-weight:900;
+}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.wallet-mini{
+  background:#000;
+  color:#fff;
+
+  padding:10px 14px;
+
+  border-radius:9px;
+
+  text-decoration:none;
+
+  font-size:12px;
+  font-weight:900;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.content{
+  max-width:1400px;
+  margin:auto;
+
+  padding:30px;
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  gap:20px;
+
+  margin-bottom:25px;
+}
+
+.welcome h1{
+  font-size:31px;
+  font-weight:950;
+}
+
+.welcome p{
+  color:var(--muted);
+
+  font-size:14px;
+
+  margin-top:7px;
+}
+
+.primary-btn{
+  background:#000;
+  color:#fff;
+
+  border:0;
+
+  padding:13px 17px;
+
+  border-radius:10px;
+
+  font-size:13px;
+  font-weight:900;
+
+  text-decoration:none;
+
+  cursor:pointer;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:16px;
+
+  margin-bottom:25px;
+}
+
+.stat{
+  background:#fff;
+
+  border:1px solid var(--border);
+
+  border-radius:16px;
+
+  padding:20px;
+}
+
+.stat-label{
+  color:var(--muted);
+
+  font-size:12px;
+  font-weight:700;
+}
+
+.stat-value{
+  font-size:26px;
+  font-weight:950;
+
+  margin-top:8px;
+}
+
+.stat-link{
+  display:inline-block;
+
+  margin-top:8px;
+
+  color:#000;
+
+  text-decoration:none;
+
+  font-size:11px;
+  font-weight:900;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.section{
+  background:#fff;
+
+  border:1px solid var(--border);
+
+  border-radius:18px;
+
+  overflow:hidden;
+
+  margin-bottom:22px;
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:20px;
+
+  border-bottom:1px solid var(--border);
+}
+
+.section-head h2{
+  font-size:19px;
+  font-weight:950;
+}
+
+.section-head span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* =========================
+   BOTS
+========================= */
+
+#botsContainer{
+  padding:20px;
+}
+
+.bot-card{
+  border:1px solid var(--border);
+
+  border-radius:15px;
+
+  padding:18px;
+
+  margin-bottom:13px;
+}
+
+.bot-card:last-child{
+  margin-bottom:0;
+}
+
+.bot-header{
+  display:flex;
+
+  justify-content:space-between;
+  align-items:center;
+
+  gap:15px;
+}
+
+.bot-title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.bot-logo{
+  width:45px;
+  height:45px;
+
+  border-radius:12px;
+
+  background:#000;
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:950;
+}
+
+.bot-name{
+  font-size:15px;
+  font-weight:950;
+}
+
+.bot-runtime{
+  color:var(--muted);
+
+  font-size:11px;
+
+  margin-top:4px;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+
+  gap:6px;
+
+  font-size:10px;
+  font-weight:950;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+}
+
+.status.online{
+  color:var(--green);
+}
+
+.status.online .status-dot{
+  background:var(--green);
+}
+
+.status.offline{
+  color:var(--red);
+}
+
+.status.offline .status-dot{
+  background:var(--red);
+}
+
+.status.starting{
+  color:var(--yellow);
+}
+
+.status.starting .status-dot{
+  background:var(--yellow);
+}
+
+.bot-info{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:15px;
+
+  border-top:1px solid var(--border);
+
+  margin-top:18px;
+  padding-top:17px;
+}
+
+.info-label{
+  color:var(--muted);
+
+  font-size:10px;
+}
+
+.info-value{
+  font-size:12px;
+  font-weight:900;
+
+  margin-top:4px;
+
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.bot-actions{
+  display:flex;
+
+  gap:8px;
+
+  margin-top:17px;
+}
+
+.bot-btn{
+  padding:9px 13px;
+
+  border:1px solid var(--border);
+
+  background:#fff;
+
+  border-radius:8px;
+
+  font-size:11px;
+  font-weight:900;
+
+  cursor:pointer;
+}
+
+.bot-btn:hover{
+  background:#f0f0f0;
+}
+
+.bot-btn.primary{
+  background:#000;
+  color:#fff;
+  border-color:#000;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+  text-align:center;
+
+  padding:55px 20px;
+}
+
+.empty-icon{
+  width:62px;
+  height:62px;
+
+  background:#f0f0f0;
+
+  border-radius:17px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  margin:0 auto 17px;
+
+  font-size:24px;
+  font-weight:950;
+}
+
+.empty h3{
+  font-size:19px;
+  font-weight:950;
+}
+
+.empty p{
+  color:var(--muted);
+
+  font-size:13px;
+
+  margin:8px 0 19px;
+}
+
+/* =========================
+   ACTIVITY
+========================= */
+
+.activity{
+  padding:0 20px;
+}
+
+.activity-item{
+  display:flex;
+  align-items:center;
+
+  gap:12px;
+
+  padding:16px 0;
+
+  border-bottom:1px solid var(--border);
+}
+
+.activity-item:last-child{
+  border-bottom:0;
+}
+
+.activity-icon{
+  width:38px;
+  height:38px;
+
+  border-radius:10px;
+
+  background:#f1f1f1;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:950;
+}
+
+.activity-title{
+  font-size:13px;
+  font-weight:850;
+}
+
+.activity-date{
+  color:var(--muted);
+
+  font-size:11px;
+
+  margin-top:3px;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+.overlay{
+  display:none;
+
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,.45);
+
+  z-index:90;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:950px){
+
+  .sidebar{
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .menu-btn{
+    display:block;
+  }
+
+  .overlay.show{
+    display:block;
+  }
+
+  .stats{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:650px){
+
+  .content{
+    padding:20px 15px;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .page-title{
+    display:none;
+  }
+
+  .welcome{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .welcome h1{
+    font-size:25px;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .bot-header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .bot-info{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .bot-actions{
+    display:grid;
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .bot-btn{
+    width:100%;
+  }
+
+}
+
+@media(max-width:400px){
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .wallet-mini{
+    padding:9px 10px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ==================================================
+     HAMBURGER SIDEBAR
+================================================== -->
+
+<aside
+  class="sidebar"
+  id="sidebar">
+
+
+  <div class="logo">
+
+    <div class="logo-box">
+      M
+    </div>
+
+    MordeHost
+
+  </div>
+
+
+  <!-- USER -->
+
+  <div class="sidebar-user">
+
+    <div
+      class="sidebar-avatar"
+      id="sidebarAvatar">
+
+      U
+
+    </div>
+
+    <div
+      class="sidebar-name"
+      id="sidebarName">
+
+      User
+
+    </div>
+
+    <div
+      class="sidebar-email"
+      id="sidebarEmail">
+
+      user@example.com
+
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+
+    <div class="nav-title">
+      Main
+    </div>
+
+
+    <!-- DASHBOARD -->
+
+    <a
+      href="dashboard.html"
+      class="active">
+
+      <span class="nav-icon">
+        ◆
+      </span>
+
+      Dashboard
+
+    </a>
+
+
+    <!-- DEPLOY -->
+
+    <a href="deploy.html">
+
+      <span class="nav-icon">
+        +
+      </span>
+
+      Deploy Bot
+
+    </a>
+
+
+    <!-- BOTS -->
+
+    <a href="bots.html">
+
+      <span class="nav-icon">
+        ◈
+      </span>
+
+      My Bots
+
+    </a>
+
+
+    <!-- LOGS -->
+
+    <a href="logs.html">
+
+      <span class="nav-icon">
+        ≡
+      </span>
+
+      Logs
+
+    </a>
+
+
+    <div class="nav-title">
+      Wallet
+    </div>
+
+
+    <!-- WALLET -->
+
+    <a href="wallet.html">
+
+      <span class="nav-icon">
+        $
+      </span>
+
+      Wallet
+
+    </a>
+
+
+    <!-- TRANSACTIONS -->
+
+    <a href="transactions.html">
+
+      <span class="nav-icon">
+        ↕
+      </span>
+
+      Transactions
+
+    </a>
+
+
+    <div class="nav-title">
+      Account
+    </div>
+
+
+    <!-- PROFILE -->
+
+    <a href="profile.html">
+
+      <span class="nav-icon">
+        ○
+      </span>
+
+      Profile
+
+    </a>
+
+
+    <!-- SETTINGS -->
+
+    <a href="settings.html">
+
+      <span class="nav-icon">
+        ⚙
+      </span>
+
+      Settings
+
+    </a>
+
+
+    <!-- THEME -->
+
+    <button
+      id="themeBtn">
+
+      <span class="nav-icon">
+        ◐
+      </span>
+
+      Theme
+
+    </button>
+
+
+    <div class="nav-title">
+      Help
+    </div>
+
+
+    <!-- SUPPORT -->
+
+    <a href="support.html">
+
+      <span class="nav-icon">
+        ?
+      </span>
+
+      Support
+
+    </a>
+
+
+    <!-- ABOUT -->
+
+    <a href="about.html">
+
+      <span class="nav-icon">
+        i
+      </span>
+
+      About
+
+    </a>
+
+
+    <!-- LOGOUT -->
+
+    <button
+      id="logoutBtn">
+
+      <span class="nav-icon">
+        ↪
+      </span>
+
+      Log Out
+
+    </button>
+
+
+  </nav>
+
+</aside>
+
+
+<div
+  class="overlay"
+  id="overlay">
+</div>
+
+
+
+<!-- ==================================================
+     MAIN
+================================================== -->
+
+<div class="main">
+
+
+  <!-- TOP BAR -->
+
+  <header class="topbar">
+
+
+    <div
+      style="
+        display:flex;
+        align-items:center;
+        gap:14px;
+      ">
+
+
+      <button
+        class="menu-btn"
+        id="menuBtn">
+
+        ☰
+
+      </button>
+
+
+      <div class="page-title">
+
+        Dashboard
+
+      </div>
+
+
+    </div>
+
+
+    <div class="top-right">
+
+      <a
+        href="wallet.html"
+        class="wallet-mini">
+
+        Wallet ·
+
+        <span id="topWallet">
+          KES 0.00
+        </span>
+
+      </a>
+
+    </div>
+
+
+  </header>
+
+
+
+  <!-- CONTENT -->
+
+  <main class="content">
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome">
+
+
+      <div>
+
+        <h1 id="welcomeText">
+          Welcome back.
+        </h1>
+
+        <p>
+          Manage your bots, wallet and hosting.
+        </p>
+
+      </div>
+
+
+      <a
+        href="deploy.html"
+        class="primary-btn">
+
+        + Deploy Bot
+
+      </a>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         DASHBOARD STATISTICS
+    ================================================== -->
+
+    <section class="stats">
+
+
+      <!-- WALLET -->
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Wallet Balance
+        </div>
+
+        <div
+          class="stat-value"
+          id="walletBalance">
+
+          KES 0.00
+
+        </div>
+
+        <a
+          href="wallet.html"
+          class="stat-link">
+
+          Manage Wallet →
+
+        </a>
+
+      </div>
+
+
+      <!-- TOTAL BOTS -->
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Total Bots
+        </div>
+
+        <div
+          class="stat-value"
+          id="totalBots">
+
+          0
+
+        </div>
+
+        <div class="stat-link">
+          All deployments
+        </div>
+
+      </div>
+
+
+      <!-- ONLINE -->
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Online Bots
+        </div>
+
+        <div
+          class="stat-value"
+          id="onlineBots">
+
+          0
+
+        </div>
+
+        <div class="stat-link">
+          Currently running
+        </div>
+
+      </div>
+
+
+      <!-- OFFLINE -->
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Offline Bots
+        </div>
+
+        <div
+          class="stat-value"
+          id="offlineBots">
+
+          0
+
+        </div>
+
+        <div class="stat-link">
+          Not running
+        </div>
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         YOUR BOTS
+    ================================================== -->
+
+    <section class="section">
+
+
+      <div class="section-head">
+
+        <h2>
+          Your Bots
+        </h2>
+
+        <span id="botSummary">
+          Manage your deployments
+        </span>
+
+      </div>
+
+
+      <div id="botsContainer">
+
+
+        <!-- EMPTY STATE -->
+
+        <div class="empty">
+
+
+          <div class="empty-icon">
+            ◆
+          </div>
+
+
+          <h3>
+            No bots yet
+          </h3>
+
+
+          <p>
+            Deploy your first bot to start hosting.
+          </p>
+
+
+          <a
+            href="deploy.html"
+            class="primary-btn">
+
+            Deploy Your First Bot
+
+          </a>
+
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         RECENT ACTIVITY
+    ================================================== -->
+
+    <section class="section">
+
+
+      <div class="section-head">
+
+        <h2>
+          Recent Activity
+        </h2>
+
+        <span>
+          Latest account activity
+        </span>
+
+      </div>
+
+
+      <div
+        class="activity"
+        id="activity">
+
+
+        <div class="activity-item">
+
+          <div class="activity-icon">
+            ◆
+          </div>
+
+          <div>
+
+            <div class="activity-title">
+              Welcome to MordeHost
+            </div>
+
+            <div class="activity-date">
+              Your dashboard is ready.
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+</div>
+
+
+
+<script>
+
+/* ==================================================
+   CONFIG
+================================================== */
+
+const API_BASE = "/api";
+
+
+/* ==================================================
+   TOKEN
+================================================== */
+
+function getToken(){
+
+  return (
+    localStorage.getItem(
+      "mordehost_token"
+    ) ||
+
+    sessionStorage.getItem(
+      "mordehost_token"
+    )
+  );
+
+}
+
+
+/* ==================================================
+   API
+================================================== */
+
+async function apiRequest(
+  endpoint,
+  options={}
+){
+
+  const token =
+    getToken();
+
+
+  if(!token){
+
+    window.location.href =
+      "login.html";
+
+    throw new Error(
+      "Authentication required."
+    );
+
+  }
+
+
+  const headers = {
+
+    "Content-Type":
+      "application/json",
+
+    ...(options.headers || {})
+
+  };
+
+
+  headers.Authorization =
+    `Bearer ${token}`;
+
+
+  const response =
+    await fetch(
+      API_BASE + endpoint,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data = {};
+
+  try{
+
+    data =
+      await response.json();
+
+  }catch{
+
+    data = {};
+
+  }
+
+
+  if(response.status === 401){
+
+    localStorage.removeItem(
+      "mordehost_token"
+    );
+
+    sessionStorage.removeItem(
+      "mordehost_token"
+    );
+
+    window.location.href =
+      "login.html";
+
+    throw new Error(
+      "Session expired."
+    );
+
+  }
+
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      "Request failed."
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+/* ==================================================
+   LOAD USER
+================================================== */
+
+async function loadUser(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/user/me"
+      );
+
+
+    const user =
+      data.user || data;
+
+
+    const name =
+      user.name ||
+      user.username ||
+      "User";
+
+
+    document.getElementById(
+      "sidebarName"
+    ).textContent =
+      name;
+
+
+    document.getElementById(
+      "sidebarEmail"
+    ).textContent =
+      user.email ||
+      "Account";
+
+
+    document.getElementById(
+      "welcomeText"
+    ).textContent =
+      `Welcome back, ${name}.`;
+
+
+    document.getElementById(
+      "sidebarAvatar"
+    ).textContent =
+      name
+        .charAt(0)
+        .toUpperCase();
+
+
+    updateWallet(
+      Number(
+        user.walletBalance || 0
+      )
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "User load error:",
+      error.message
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   WALLET
+================================================== */
+
+function updateWallet(
+  amount
+){
+
+  const money =
+    `KES ${Number(
+      amount || 0
+    ).toLocaleString(
+      "en-KE",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    )}`;
+
+
+  document.getElementById(
+    "walletBalance"
+  ).textContent =
+    money;
+
+
+  document.getElementById(
+    "topWallet"
+  ).textContent =
+    money;
+
+}
+
+
+/* ==================================================
+   LOAD BOTS
+================================================== */
+
+async function loadBots(){
+
+  try{
+
+    const data =
+      await apiRequest(
+        "/bots"
+      );
+
+
+    const bots =
+      Array.isArray(data)
+        ? data
+        : (
+          Array.isArray(data.bots)
+            ? data.bots
+            : []
+        );
+
+
+    renderBots(
+      bots
+    );
+
+
+  }catch(error){
+
+    console.log(
+      "Bots API unavailable:",
+      error.message
+    );
+
+
+    renderBots([]);
+
+  }
+
+}
+
+
+/* ==================================================
+   RENDER BOTS
+================================================== */
+
+function renderBots(
+  bots
+){
+
+  const container =
+    document.getElementById(
+      "botsContainer"
+    );
+
+
+  const total =
+    bots.length;
+
+
+  const online =
+    bots.filter(
+      bot =>
+        bot.status === "online" ||
+        bot.status === "running"
+    ).length;
+
+
+  const offline =
+    total - online;
+
+
+  document.getElementById(
+    "totalBots"
+  ).textContent =
+    total;
+
+
+  document.getElementById(
+    "onlineBots"
+  ).textContent 
